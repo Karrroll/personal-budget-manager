@@ -25,6 +25,7 @@
 /* CUSTOM PROPERTIES */ 
 :root {
   --bg-header: #E0E0E0;
+  --color-divider-green: #198754;
 }
 
 #header {
@@ -33,4 +34,13 @@
 
 .logo {
   height: 3rem;
+}
+
+.article-divider {
+  width: 50%;
+  height: 0.2rem;
+  margin: 2rem auto;
+  background-color: var(--color-divider-green);
+  border: none;
+  box-shadow: 0 0.5rem 0.75rem var(--color-divider-green);
 }
