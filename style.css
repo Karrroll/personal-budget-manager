@@ -28,6 +28,16 @@
   --color-divider-green: #198754;
 }
 
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+#main {
+  flex: 1;
+}
+
 #header {
   background-color: var(--bg-header);
 }
