@@ -32,6 +32,10 @@
   background-color: var(--bg-header);
 }
 
+#signin-form {
+  width: min(100%, max(21.875rem, 35%));
+}
+
 .logo {
   height: 3rem;
 }
@@ -43,4 +47,13 @@
   background-color: var(--color-divider-green);
   border: none;
   box-shadow: 0 0.5rem 0.75rem var(--color-divider-green);
+}
+
+.signup-note {
+  font-size: 0.85em;
+}
+
+.signup-link {
+  text-decoration: none;
+  font-weight: bolder;
 }
