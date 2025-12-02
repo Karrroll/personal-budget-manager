@@ -14,6 +14,12 @@
   font-display: swap;
 }
 
+@keyframes gradientDiagonal {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
 /* GLOBAL PROPERTIES */
 * {
     margin: 0;
@@ -24,7 +30,10 @@
 
 /* CUSTOM PROPERTIES */ 
 :root {
-  --bg-header: #E0E0E0;
+  --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #DFFFE8 100%);
+  --bg-header: #ececec;
+  --bg-signin:  #fafafa;
+  --bg-footer: #e5e5e5;
   --color-divider-green: #198754;
 }
 
@@ -36,6 +45,12 @@ body {
 
 #main {
   flex: 1;
+  background-image: var(--bg-primary);
+  background-repeat: no-repeat;
+  background-size: 400% 400%;
+  background-attachment: scroll;
+  background-position: center, center;
+  animation: gradientDiagonal 5s ease infinite;
 }
 
 #header {
@@ -43,7 +58,12 @@ body {
 }
 
 #signin-form {
+  background-color: var(--bg-signin);
   width: min(100%, max(21.875rem, 35%));
+}
+
+#footer {
+  background-color: var(--bg-footer);
 }
 
 .logo {
