@@ -13,24 +13,44 @@
 
 <body>
   <header id="header" class="p-3">
-    <div class="container">
-      <div class="d-flex flex-wrap gap-3 align-items-center justify-content-center justify-content-sm-between">
-        <a href="/" class="d-flex align-items-center" aria-label="Go to homepage">
-          <img src="./assets/images/LOGO.png" class="logo" alt="Budget app logo">
+
+    <div id="header-content" class="container d-flex flex-column flex-md-row gap-2 align-items-center justify-content-sm-between">
+      <div class="p-2">
+        <a href="/" aria-label="Go to homepage">
+          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
-        <div class="d-flex gap-2 text-end">
-          <button type="button" class="btn btn-success d-flex gap-2 align-items-center">
+      </div>
+
+      <div class="header-login">
+        <div class="collapse collapse-horizontal login-collapse-width" id="collapseWidthExample">
+          <div class="d-md-flex">
+            <input type="email" class="form-control" id="floatingInput" name="email" autocomplete="email"
+              placeholder="name@example.com" required>
+            <label class="visually-hidden" for="floatingInput">Email address</label>
+
+            <input type="password" class="form-control" id="floatingPassword" name="password"
+              autocomplete="current-password" placeholder="Password" required>
+            <label class="visually-hidden" for="floatingPassword">Password</label>
+          </div>
+        </div>
+
+        <div class="d-flex flex-column flex-md-row gap-2">
+          <button type="button" class="btn btn-success button-content-center gap-1"
+            data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false"
+            aria-controls="collapseWidthExample">
             <img src="./assets/images/icons/box-arrow-in-right.svg" alt="" aria-hidden="true">
             Sign in
           </button>
 
-          <a href="" class="btn btn-primary d-flex gap-2 align-items-center" aria-label="Go to signup page">
+          <a type="button" href="" class="btn btn-primary button-content-center gap-1 "
+            aria-label="Go to signup page">
             <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
             Sign up
           </a>
         </div>
       </div>
     </div>
+
   </header>
 
   <main id="main">

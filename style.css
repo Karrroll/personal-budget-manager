@@ -1,3 +1,10 @@
+/* GLOBAL PROPERTIES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", sans-serif;
+  }
 @font-face {
   font-family: "INTER";
   src: url("./assets/fonts/Inter/Inter-VariableFont_opsz,wght.ttf") format("truetype-variations");
@@ -14,23 +21,9 @@
   font-display: swap;
 }
 
-@keyframes gradientDiagonal {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-/* GLOBAL PROPERTIES */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: "Inter", sans-serif;
-  }
-
 /* CUSTOM PROPERTIES */ 
 :root {
-  --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #DFFFE8 100%);
+  --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #D8F8F2 50%, #DFFFE8 100%);
   --bg-header: #ececec;
   --bg-signin:  #fafafa;
   --bg-footer: #e5e5e5;
@@ -38,12 +31,37 @@
   --color-divider-green: #198754;
 }
 
-body {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+/* background style */
+@keyframes gradientDiagonal {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }
 
+/*header login layout*/
+@media (min-width: 768px) and (max-width: 992px)  {
+  #header-content:has(.collapse.show) {
+    flex-direction: column !important;
+  }
+}
+
+.header-login {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+@media (min-width: 768px) {
+  .header-login {
+    flex-direction: row;
+  }
+}
+
+.login-collapse-width {
+  flex: 1;
+}
+
+/* sections styles */
 #main {
   flex: 1;
   background-image: var(--bg-primary);
@@ -73,13 +91,34 @@ body {
   background-color: var(--bg-footer);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
+/* -------------------------------------------------------------- */
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 
 h1 {
   color: var(--h1-color);
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.75);
 }
 
-.logo {
+.button-content-center {
+  display: flex;
+  justify-content: center;
+}
+
+.signup-note {
+  font-size: 0.85em;
+}
+
+.signup-link {
+  text-decoration: none;
+  font-weight: bolder;
+}
+
+.logo-size {
   height: 3rem;
 }
 
@@ -90,13 +129,4 @@ h1 {
   background-color: var(--color-divider-green);
   border: none;
   box-shadow: 0 0.5rem 0.75rem var(--color-divider-green);
-}
-
-.signup-note {
-  font-size: 0.85em;
-}
-
-.signup-link {
-  text-decoration: none;
-  font-weight: bolder;
 }
