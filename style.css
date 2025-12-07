@@ -73,7 +73,12 @@
   animation: gradientDiagonal 5s ease infinite;
 }
 
+#main .container {    /* center content vertically */
+  margin: auto auto;
+}
+
 #header {
+  padding: 1rem 0;
   background-color: var(--bg-header);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -125,6 +130,7 @@ h1 {
 
 .logo-size {
   height: 3rem;
+  margin: 0.5rem 0;
 }
 
 .article-divider {
