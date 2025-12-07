@@ -28,6 +28,8 @@
   --bg-signin:  #fafafa;
   --bg-footer: #e5e5e5;
   --h1-color: #0D3B66;
+  --menu-text-color: #333333;
+  --menu-hover-background: #dcdcdc;
   --color-divider-green: #198754;
 }
 
@@ -81,6 +83,10 @@
   padding: 1rem 0;
   background-color: var(--bg-header);
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#header:has(nav) {
+  padding-bottom: 0;
 }
 
 #signin-form, #signup-form {
@@ -170,3 +176,25 @@ h1 {
   font-size: 0.85em;
   text-align: center;
 }
+
+/* ------------------------ dashboard.html STYLES ------------------------------------------*/
+#header-homepage {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+#nav-menu ul {
+  display: flex;
+  justify-content: center;
+}
+
+#nav-menu .nav-link {
+  color: var(--menu-text-color);
+  font-size: 1.25em;
+  padding: 1rem 1rem;
+}
+
+#nav-menu li :hover {
+  font-weight: bolder;
+  background-color: var(--menu-hover-background);
+}
+
