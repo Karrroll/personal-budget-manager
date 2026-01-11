@@ -30,7 +30,8 @@
   --bg-monthly-summary: #ffffff;
   --bg-signin:  #fafafa;
   --bg-footer: #e5e5e5;
-  --h1-color: #0D3B66;
+
+  --h1-hero-color: #0D3B66;
 
   /* navmenu */
   --menu-text-color: #333333;
@@ -129,8 +130,8 @@ body {
   min-height: 100vh;
 }
 
-h1 {
-  color: var(--h1-color);
+#hero-title {
+  color: var(--h1-hero-color);
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.75);
 }
 
