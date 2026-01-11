@@ -23,14 +23,16 @@
 
 /* CUSTOM PROPERTIES */ 
 :root {
+/* backgrounds */
   --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #D8F8F2 50%, #DFFFE8 100%);
   --bg-header: #ececec;
-  --bg-sidemenu: #ffffff;
+  --bg-sidemenu: #fafafa;
   --bg-monthly-summary: #ffffff;
   --bg-signin:  #fafafa;
   --bg-footer: #e5e5e5;
   --h1-color: #0D3B66;
 
+  /* navmenu */
   --menu-text-color: #333333;
   --menu-hover-bg-color: #dcdcdc;
   --menu-item-underline: 0.125rem solid #000000;
@@ -396,7 +398,7 @@ nav a:hover:not(.sidebar-menu-icon) {
 }
 
 .balance-item {
- --item-color: var(--balance-primary-color);
+  --item-color: var(--balance-primary-color);
 }
 
 .details-link {
