@@ -33,13 +33,16 @@
 
   --menu-text-color: #333333;
   --menu-hover-bg-color: #dcdcdc;
-  --color-divider-green: #198754;
   --menu-item-underline: 0.125rem solid #000000;
 
   /* dashboard-primary-color */
   --income-primary-color: 76 175 80; /*green*/
   --expense-primary-color: 244 67 54; /*red*/
   --balance-primary-color: 0 0 0; /*black*/
+
+  /* dividers */
+  --color-divider-green: #198754;
+  --color-divider-gray: #66677A;
 }
 
 /* background style */
@@ -401,6 +404,29 @@ nav a:hover:not(.sidebar-menu-icon) {
   font-size: 0.9rem;
   
   align-self: flex-end;
+}
+
+/* DASHBOARD - DIVIDER */
+.divider-wrapper {  /* to center and set vertical divider height */
+  display: flex;
+  align-items: center;
+}
+
+hr.summary-divider {
+  background-color: var(--color-divider-gray);
+  border: none;
+  margin: 3rem auto;
+
+  width: 85%;
+  height: 0.175rem;
+}
+
+@media (min-width: 768px) {
+  hr.summary-divider {
+    width: 0.175rem;
+    height: 85%;
+    margin: auto 3rem;
+  }
 }
 
 /* DASHBOARD - QUICK ACTION */
