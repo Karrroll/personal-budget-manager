@@ -26,13 +26,14 @@
   --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #D8F8F2 50%, #DFFFE8 100%);
   --bg-header: #ececec;
   --bg-sidemenu: #ffffff;
+  --bg-monthly-summary: #ffffff;
   --bg-signin:  #fafafa;
   --bg-footer: #e5e5e5;
   --h1-color: #0D3B66;
+
   --menu-text-color: #333333;
   --menu-hover-bg-color: #dcdcdc;
   --color-divider-green: #198754;
-
   --menu-item-underline: 0.125rem solid #000000;
 }
 
@@ -296,3 +297,104 @@ nav a:hover:not(.sidebar-menu-icon) {
     display: none;
   }
 }
+
+/*  DASHBOARD */
+.dashboard-section {
+  background-color: var(--bg-monthly-summary);
+  padding: 2.5rem clamp(2.5rem, 5vw, 5rem);
+
+  display: flex;
+  flex-direction: column;
+  
+  margin: auto;
+}
+
+@media (min-width: 768px) {
+  .dashboard-section {
+    flex-direction: row;
+  }
+}
+
+/* DASHBOARD - MONTHLY SUMMARY */
+.monthly-overview-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+#monthly-overview-title {
+  text-align: center;
+  font-weight: bolder;
+}
+
+.monthly-summary-items {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  padding: 2.5rem 0;
+  justify-items: center;
+}
+
+@media (min-width: 576px) {
+  .monthly-summary-items {
+    grid-template-columns: repeat(2, 1fr);
+    row-gap: 0;
+  }
+  .balance-item {
+    grid-column: span 2;
+  }
+}
+
+@media (min-width: 992px) {
+  .monthly-summary-items {
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+  }
+  .balance-item {
+    grid-column: auto;
+  }
+}
+
+.item-label {
+  --item-color: 0 0 0; /* default value */
+
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  
+  padding-top: 2rem;
+  justify-content: center;
+  align-items: center;
+
+  border: 2px solid rgb(var(--item-color));
+  background-color: rgb(var(--item-color) / 0.1);
+  box-shadow: 0 0 20px rgb(var(--item-color) / 0.6);
+}
+
+.item-label span {
+  font-weight: bolder;
+}
+
+.income-item {
+  --item-color: var(--income-primary-color);
+}
+
+.expense-item {
+  --item-color: var(--expense-primary-color);
+}
+
+.balance-item {
+ --item-color: var(--balance-primary-color);
+}
+
+.details-link {
+  text-decoration: none;
+  font-size: 0.9rem;
+  
+  align-self: flex-end;
+}
+
