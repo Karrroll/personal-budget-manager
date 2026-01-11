@@ -35,6 +35,11 @@
   --menu-hover-bg-color: #dcdcdc;
   --color-divider-green: #198754;
   --menu-item-underline: 0.125rem solid #000000;
+
+  /* dashboard-primary-color */
+  --income-primary-color: 76 175 80; /*green*/
+  --expense-primary-color: 244 67 54; /*red*/
+  --balance-primary-color: 0 0 0; /*black*/
 }
 
 /* background style */
@@ -396,5 +401,87 @@ nav a:hover:not(.sidebar-menu-icon) {
   font-size: 0.9rem;
   
   align-self: flex-end;
+}
+
+/* DASHBOARD - QUICK ACTION */
+.quick-actions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+
+  justify-content: center;
+  align-items: center;
+}
+
+@media (min-width: 576px) and (max-width: 768px) {
+  .quick-actions-wrapper {
+    flex-direction: row;
+  }  
+}
+
+.quick-action-label {
+  --action-color: 0 0 0;  /* default value */
+
+  padding: 1rem;
+  width: 100px;
+  aspect-ratio: 1/1;
+  border-radius: 1rem;
+
+  display: inline-flex;
+  align-items: center;
+
+  background-color: rgb(var(--action-color) / 0.2);
+  border: 2px solid rgb(var(--action-color) / 0.2);
+  box-shadow: 0 0 20px rgb(var(--action-color) / 0.6);
+ 
+  transition: all 0.2s ease;
+}
+
+.quick-action-label:hover {
+  transform: scale(1.1);
+
+  background-color: rgb(var(--action-color) / 0.4);
+  border: 2px solid rgb(var(--action-color) / 0.4);
+  box-shadow: 0 0 20px rgb(var(--action-color) / 0.8);
+}
+
+.income-action {
+  --action-color: var(--income-primary-color);
+}
+
+.expense-action {
+  --action-color: var(--expense-primary-color);
+}
+
+.action-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+
+  width: 100%;
+  height: 100%;
+  
+  text-decoration: none;
+}
+
+.action-content img {
+  width: 50%;
+}
+
+.action-content span {
+  font-size: 0.75rem;
+  font-weight: bold;
+
+  white-space: nowrap;
+}
+
+.action-content-income {
+  color: rgb(var(--income-action-color));
+}
+
+.action-content-expense {
+  color: var(--expense-action-color);
 }
 
