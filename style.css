@@ -29,10 +29,11 @@
   --bg-sidemenu: #fafafa;
   --bg-monthly-summary: #ffffff;
   --bg-signin:  #fafafa;
+  --bg-transaction-form: var(--bg-signin);
   --bg-footer: #e5e5e5;
 
   --h1-hero-color: #0D3B66;
-
+  --h1-transaction-title-color: #ffffff;
   /* navmenu */
   --menu-text-color: #333333;
   --menu-hover-bg-color: #dcdcdc;
@@ -48,7 +49,7 @@
   --color-divider-gray: #66677A;
 }
 
-/* background style */
+/* main background style */
 @keyframes gradientDiagonal {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
@@ -90,7 +91,7 @@
   animation: gradientDiagonal 5s ease infinite;
 }
 
-#main .container {    /* center content vertically */
+#main .container {
   margin: auto auto;
 }
 
@@ -514,3 +515,20 @@ hr.summary-divider {
   color: var(--expense-action-color);
 }
 
+.transaction-section {
+  background-color: var(--bg-transaction-form);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-radius: 2rem;
+  width: clamp(18rem, 100%, 40rem);
+}
+
+.transaction-title {
+  color: var(--h1-transaction-title-color);
+  text-align: center;
+  margin: 0;
+}
+
+#comment-field {
+  height: 5rem;
+}
