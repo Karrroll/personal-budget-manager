@@ -91,8 +91,47 @@
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" class="py-5 px-2 px-sm-5 justify-content-center">
+    <div id="overview-section" class="container d-flex flex-column m-0">
+      <h1 hidden>Your Personal Financial Report</h1>
 
+      <section id="select-date-section" class="align-self-center align-self-md-end d-flex flex-column gap-3">
+        <div class="d-flex flex-column">
+          <label id="select-period-label" for="select-period" class="fw-bold">Select period:</label>
+          <select
+            id="select-period"
+            class="form-select"
+          >
+            <option value="1" selected>This Month</option>
+            <option value="2">Previous Month</option>
+            <option value="3">This Year</option>
+            <option value="4">Custom Date</option>
+          </select>
+        </div>
+
+        <div id="select-custom-dates">
+          <label for="start-date" id="select-date-label" class="fw-bold d-flex flex-column">
+            From:
+            <input type="date" id="start-date" name="start-date" required />
+          </label>
+          <label for="end-date" id="select-date-label" class="fw-bold d-flex flex-column">
+            To:
+            <input type="date" id="end-date" name="end-date" required />
+          </label>
+          <input
+            id="select-date-button"
+            class="align-self-end btn btn-primary mt-2 fw-bold"
+            type="submit"
+            value="APPLY"
+            aria-label="Apply custom date range"
+          />
+        </div>
+      </section>
+
+      <section id="financial-summary">
+
+      </section>
+    </div>
   </main>
 
   <footer id="footer">

@@ -532,3 +532,14 @@ hr.summary-divider {
 #comment-field {
   height: 5rem;
 }
+
+/*  overwiev.html */
+#select-date-section {
+  width: min(100%, 20rem);
+}
+
+#select-custom-dates {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
