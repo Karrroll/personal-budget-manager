@@ -34,6 +34,8 @@
 
   --h1-hero-color: #0D3B66;
   --h1-transaction-title-color: #ffffff;
+  --summary-title-color: #ffffff;
+
   /* navmenu */
   --menu-text-color: #333333;
   --menu-hover-bg-color: #dcdcdc;
@@ -543,3 +545,24 @@ hr.summary-divider {
   flex-direction: column;
   gap: 0.25rem;
 }
+
+#overview-section {
+  min-width: 15rem;
+}
+
+.summary-title h2 {
+  color: var(--summary-title-color);
+  margin: 0;
+}
+
+#financial-summary {
+  width: min(100%, 30rem);
+}
+
+#income-summary,
+#expense-summary {
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  border-radius: 1.5rem;
+}
+
