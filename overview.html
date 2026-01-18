@@ -101,6 +101,8 @@
           <select
             id="select-period"
             class="form-select"
+            aria-controls="select-custom-dates"
+            aria-expanded="false"
           >
             <option value="1" selected>This Month</option>
             <option value="2">Previous Month</option>
@@ -109,7 +111,7 @@
           </select>
         </div>
 
-        <div id="select-custom-dates">
+        <div id="select-custom-dates" hidden>
           <label for="start-date" id="select-date-label" class="fw-bold d-flex flex-column">
             From:
             <input type="date" id="start-date" name="start-date" required />
