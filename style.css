@@ -47,6 +47,9 @@
   --expense-primary-color: 244 67 54; /*red*/
   --balance-primary-color: 0 0 0; /*black*/
 
+  /* font-color */
+  --black-font: #000000;
+
   /* dividers */
   --color-divider-green: #198754;
   --color-divider-gray: #66677A;
@@ -571,5 +574,12 @@ hr.summary-divider {
   border-radius: 1.5rem;
 }
 
-
 /* table styles */
+tbody td a {    /* category name */
+  color: var(--black-font);
+  text-decoration: none;
+}
+
+tbody td a:hover {
+  font-weight: bolder;
+}
