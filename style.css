@@ -53,6 +53,17 @@
   /* dividers */
   --color-divider-green: #198754;
   --color-divider-gray: #66677A;
+
+/* progress ring scores [%] */
+/* --score-income will be calculated */
+  --score-income: 65; /* TEMPORARY VALUE! (total income * 100) / (total income + total expense) = score-income */
+  --score-expense: calc(100 - var(--score-income));
+
+  --total-income: 6500;   /* TEMPORARY VALUE! Value will be calculated automatically */
+  --total-expense: 3500;  /* TEMPORARY VALUE! Value will be calculated automatically */
+  --total-balance: 10000;  /* TEMPORARY VALUE! Value will be calculated automatically */
+/* progress ring width */
+  --ring-width: 5%;
 }
 
 /* main background style */
@@ -564,7 +575,7 @@ hr.summary-divider {
 }
 
 #financial-summary {
-  width: min(100%, 30rem);
+  width: 100%;
 }
 
 #income-summary,
@@ -574,7 +585,7 @@ hr.summary-divider {
   border-radius: 1.5rem;
 }
 
-/* table styles */
+/* table styles for modal triggers*/
 tbody td a {    /* category name */
   color: var(--black-font);
   text-decoration: none;
@@ -582,4 +593,138 @@ tbody td a {    /* category name */
 
 tbody td a:hover {
   font-weight: bolder;
+}
+
+/* Progress ring style */
+#progress-ring {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  border: none;
+}
+
+.semi-ring-wrapper {
+  width: clamp(19rem, 100%, 37.5rem);   /* 304 - 600 px */
+  padding-bottom: 1.5rem;
+  aspect-ratio: 2 / 1;
+
+  align-items: flex-end;
+  justify-content: center;
+
+  background-color: transparent;
+  border: none;
+  overflow: hidden;
+}
+
+.semi-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.rings {
+  width: 100%;
+  height: 200%;
+  transform: rotate(-90deg);
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+
+  fill: transparent;
+  stroke-width: var(--ring-width);
+}
+
+.ring.bg {
+stroke: rgb(var(--balance-primary-color));
+opacity: 0.25;
+stroke-dasharray: 0.5 0.5;
+stroke-dashoffset: 0.25;
+}
+
+@property --progressAnimation {
+syntax: "<number>";
+inherits: false;
+initial-value: 0;
+}
+
+.ring.green {
+  stroke: rgb(var(--income-primary-color));
+  --glow-color: var(--income-primary-color);
+
+  stroke-dasharray: calc(0.5 * (var(--total-income) / var(--total-balance)) * var(--progressAnimation)) 1;
+  stroke-dashoffset: -0.25;
+
+  transform: scaleX(-1);
+  transform-origin: center;
+
+  animation: ringGrow 2s ease-out forwards;
+}
+.ring.red {
+  stroke: rgb(var(--expense-primary-color));
+  --glow-color: var(--expense-primary-color);
+
+  stroke-dasharray: calc(0.5 * (var(--total-expense) / var(--total-balance)) * var(--progressAnimation)) 1;
+  stroke-dashoffset: -0.75;
+
+  animation: ringGrow 2s ease-out forwards;
+}
+
+@keyframes ringGrow {
+  0% {
+    --progressAnimation: 0;
+    filter: drop-shadow(0 0 7.5px rgb(var(--glow-color)));
+  }
+  100% {
+    --progressAnimation: 1;
+    filter: drop-shadow(0 0 7.5px rgb(var(--glow-color)));
+  }
+}
+
+.ring-score {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 30%;
+  font-size: clamp(1.5rem, 7.5vw, 3rem);
+  font-weight: bolder;
+  gap: 0.5rem;
+}
+
+.ring-score .expense {
+  color: rgb(var(--expense-primary-color));
+}
+
+.ring-score .expense::after {
+  content: "%"
+}
+
+.ring-score .income {
+  color: rgb(var(--income-primary-color));
+}
+
+.ring-score .income::after {
+  content: "%"
+}
+
+.ring-score.divider {
+  opacity: 0.6;
+}
+
+.financial-feedback {
+  text-align: center;
+  font-weight: bolder;
+  padding: 0.5rem max(7.5vw, 1.5rem)
+}
+
+.financial-feedback p {
+  display: none;
+}
+
+p.positive {  /* TEMPoraty: shown for visual preview, will be controlled by JS */
+  display: block;
 }

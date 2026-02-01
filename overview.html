@@ -134,16 +134,42 @@
       </section>
 
       <section id="financial-summary" class="align-self-center d-flex flex-column mt-5 gap-5">
-        <div id="pie-chart-summary">
 
-        </div>
-        
+<!-- Progress ring balance -->
+        <section id="progress-ring">
+          <div class="card semi-ring-wrapper">
+            <div class="semi-ring">
+              <svg class="rings" viewBox="0 0 300 300">
+                <circle pathLength="1" class="ring bg" cx="150" cy="150" r="125"></circle> <!-- to w tle jakby obrys -->
+                <circle pathLength="1" class="ring green" cx="150" cy="150" r="125"></circle> <!-- zielony ring -->
+                <circle pathLength="1" class="ring red" cx="150" cy="150" r="125"></circle> <!-- czerwony ring -->
+              </svg>
+              <div class="ring-score">
+                <span class="expense">35</span> <!-- Value will be calculated automatically-->
+                <span class="divider">/</span>
+                <span class="income">65</span>  <!-- Value will be calculated automatically-->
+              </div>
+            </div>
+          </div>
+          <div class="financial-feedback fs-5">
+            <p class="positive">
+              <span>Great job!</span> Your finances are in good shape!
+            </p>
+            <p class="neutral">
+              Your finances are balanced - keep an eye on your spending!
+            </p>
+            <p class="negative">
+              <span>Warning!</span> You are spending more than you earn.
+            </p>
+          </div>
+        </section>
+
+<!-- Income summary table -->
         <div id="income-summary" class="d-flex flex-column">
           <div class="summary-title bg-dark text-center py-2">
             <h2>Income</h2>
           </div>
 
-<!-- Income summary table -->
           <table class="table table-bordered table-striped table-hover m-0">
             <thead >
               <tr>
@@ -163,11 +189,11 @@
                       data-category="categoryId"
                       title="Go to more details"
                       aria-label="Go to more details">
-                      Category1
+                      Category1 <!-- Category name will be loaded automatically-->
                   </a>  <!-- data-category to identify selected category -->
                 </td>
-                <td class="text-center">#</td>
-                <td class="text-center">#</td>
+                <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
+                <td class="text-center">#</td>  <!-- Value will be calculated automatically-->
               </tr>
               <tr>
                 <th scope="row" class="text-center">2</th>
@@ -219,7 +245,7 @@
               <tr>
                 <th scope="row" colspan="4" class="text-end">
                   <span>Total incomes:</span>
-                  <span>#</span>
+                  <span>6500</span>  <!-- TEMPORARY VALUE! Value will be calculated automatically -->
                   <span>PLN</span>
                 </th>
               </tr>
@@ -252,11 +278,11 @@
                       data-category="categoryId"
                       title="Go to more details"
                       aria-label="Go to more details">
-                      Category1
+                      Category1   <!-- Category name will be loaded automatically-->
                   </a>  <!-- data-category to identify selected category -->
                 </td>
-                <td class="text-center">#</td>
-                <td class="text-center">#</td>
+                <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
+                <td class="text-center">#</td>  <!-- Value will be calculated automatically-->
               </tr>
               <tr>
                 <th scope="row" class="text-center">2</th>
@@ -268,7 +294,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category2
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -283,7 +309,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category3
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -298,7 +324,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category4
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -313,7 +339,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category5
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -328,7 +354,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category6
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -343,7 +369,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category7
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -358,7 +384,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category8
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -373,7 +399,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category9
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -388,7 +414,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category10
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -403,7 +429,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category11
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -418,7 +444,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category12
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -433,7 +459,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category13
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -448,7 +474,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category14
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -463,7 +489,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category15
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -478,7 +504,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category16
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -493,7 +519,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category17
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -503,7 +529,7 @@
               <tr>
                 <th scope="row" colspan="4" class="text-end">
                   <span>Total expenses:</span>
-                  <span>#</span>
+                  <span>3500</span> <!-- TEMPORARY VALUE! Value will be calculated automatically -->
                   <span>PLN</span>
                 </th>
               </tr>
