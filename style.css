@@ -725,6 +725,14 @@ initial-value: 0;
   display: none;
 }
 
-p.positive {  /* TEMPoraty: shown for visual preview, will be controlled by JS */
+.positive span {
+  color: rgb(var(--income-primary-color));
+}
+
+.negative span {
+  color: rgb(var(--expense-primary-color));
+}
+
+p.positive {  /* Temporaty: will be controlled by JS */
   display: block;
 }

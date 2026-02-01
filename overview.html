@@ -95,7 +95,6 @@
 
   <main id="main" class="py-5 px-2 px-sm-5 justify-content-center">
     <div id="overview-section" class="container d-flex flex-column m-0">
-      <h1 hidden>Your Personal Financial Report</h1>
 
   <!-- Select period -->
       <section id="select-date-section" class="align-self-center align-self-md-end d-flex flex-column gap-2">
@@ -106,6 +105,7 @@
             class="form-select"
             aria-controls="select-custom-dates"
             aria-expanded="false"
+            aria-label="Select financial period"
           >
             <option value="1" selected>This Month</option>
             <option value="2">Previous Month</option>
@@ -115,11 +115,11 @@
         </div>
 
         <div id="select-custom-dates" hidden>
-          <label for="start-date" id="select-date-label" class="fw-bold d-flex flex-column">
+          <label for="start-date" id="select-start-date-label" class="fw-bold d-flex flex-column">
             From:
             <input type="date" id="start-date" name="start-date" required />
           </label>
-          <label for="end-date" id="select-date-label" class="fw-bold d-flex flex-column">
+          <label for="end-date" id="select-end-date-label" class="fw-bold d-flex flex-column">
             To:
             <input type="date" id="end-date" name="end-date" required />
           </label>
@@ -136,22 +136,27 @@
       <section id="financial-summary" class="align-self-center d-flex flex-column mt-5 gap-5">
 
 <!-- Progress ring balance -->
-        <section id="progress-ring">
+        <div id="progress-ring">
           <div class="card semi-ring-wrapper">
-            <div class="semi-ring">
+            <div class="semi-ring"
+              aria-label="Income vs expense balance"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              role="progressbar"
+            >
               <svg class="rings" viewBox="0 0 300 300">
                 <circle pathLength="1" class="ring bg" cx="150" cy="150" r="125"></circle> <!-- to w tle jakby obrys -->
                 <circle pathLength="1" class="ring green" cx="150" cy="150" r="125"></circle> <!-- zielony ring -->
                 <circle pathLength="1" class="ring red" cx="150" cy="150" r="125"></circle> <!-- czerwony ring -->
               </svg>
               <div class="ring-score">
-                <span class="expense">35</span> <!-- Value will be calculated automatically-->
+                <span class="expense" aria-label="Expense 35%">35</span> <!-- Value will be calculated automatically. Update aria-label when value changes!! -->
                 <span class="divider">/</span>
-                <span class="income">65</span>  <!-- Value will be calculated automatically-->
+                <span class="income" aria-label="Income 65%">65</span>  <!-- Value will be calculated automatically Update aria-label when value changes!!-->
               </div>
             </div>
           </div>
-          <div class="financial-feedback fs-5">
+          <div class="financial-feedback fs-5" aria-live="polite" role="status">
             <p class="positive">
               <span>Great job!</span> Your finances are in good shape!
             </p>
@@ -162,7 +167,7 @@
               <span>Warning!</span> You are spending more than you earn.
             </p>
           </div>
-        </section>
+        </div>
 
 <!-- Income summary table -->
         <div id="income-summary" class="d-flex flex-column">
@@ -170,7 +175,9 @@
             <h2>Income</h2>
           </div>
 
-          <table class="table table-bordered table-striped table-hover m-0">
+          <table class="table table-bordered table-striped table-hover m-0"
+            aria-label="Summary of income by category for selected period"
+          >
             <thead >
               <tr>
                 <th scope="col" class="text-center">#</th>
@@ -187,9 +194,9 @@
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
                       data-category="categoryId"
-                      title="Go to more details"
-                      aria-label="Go to more details">
-                      Category1 <!-- Category name will be loaded automatically-->
+                      title="Go to more details for Category1"
+                      aria-label="View more details for Category1">
+                      Category1 <!-- Category name will be loaded automatically Update aria-label and title category names!!-->
                   </a>  <!-- data-category to identify selected category -->
                 </td>
                 <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
@@ -205,7 +212,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category2
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -220,7 +227,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category3
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -235,7 +242,7 @@
                       title="Go to more details"
                       aria-label="Go to more details">
                       Category4
-                  </a>  <!-- data-category to identify selected category -->
+                  </a>
                 </td>
                 <td class="text-center">#</td>
                 <td class="text-center">#</td>
@@ -243,9 +250,9 @@
             </tbody>
             <tfoot class="table-group-divider">
               <tr>
-                <th scope="row" colspan="4" class="text-end">
-                  <span>Total incomes:</span>
-                  <span>6500</span>  <!-- TEMPORARY VALUE! Value will be calculated automatically -->
+                <th scope="row" colspan="4" class="text-end" aria-label="Total income: 6500 PLN">
+                  <span>Total income:</span>
+                  <span>6500</span>  <!-- TEMPORARY VALUE! Value will be calculated automatically. Update aria-label!! -->
                   <span>PLN</span>
                 </th>
               </tr>
@@ -259,7 +266,9 @@
             <h2>Expense</h2>
           </div>
 
-          <table class="table table-bordered table-striped table-hover m-0">
+          <table class="table table-bordered table-striped table-hover m-0"
+            aria-label="Summary of expense by category for selected period"
+          >
             <thead >
               <tr>
                 <th scope="col" class="text-center">#</th>
@@ -276,9 +285,9 @@
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
                       data-category="categoryId"
-                      title="Go to more details"
-                      aria-label="Go to more details">
-                      Category1   <!-- Category name will be loaded automatically-->
+                      title="Go to more details for Category1"
+                      aria-label="View more details for Category1">
+                      Category1   <!-- Category name will be loaded automatically Update aria-label and title category names!!-->
                   </a>  <!-- data-category to identify selected category -->
                 </td>
                 <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
@@ -527,9 +536,9 @@
             </tbody>
             <tfoot class="table-group-divider">
               <tr>
-                <th scope="row" colspan="4" class="text-end">
-                  <span>Total expenses:</span>
-                  <span>3500</span> <!-- TEMPORARY VALUE! Value will be calculated automatically -->
+                <th scope="row" colspan="4" class="text-end" aria-label="Total expense: 3500 PLN">
+                  <span>Total expense:</span>
+                  <span>3500</span> <!-- TEMPORARY VALUE! Value will be calculated automatically. Update aria-label!! -->
                   <span>PLN</span>
                 </th>
               </tr>
@@ -539,7 +548,7 @@
       </section>
     
 <!-- Category details modal -->
-      <section class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true">
+      <section class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true"> <!-- aria-hidden JS !! -->
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header">
@@ -550,7 +559,7 @@
               <p>List of category transactions (table with date, name, amount etc.)..... </p>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
               <!-- add print/export button -->
             </div>
           </div>
