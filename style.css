@@ -31,6 +31,7 @@
   --bg-signin:  #fafafa;
   --bg-transaction-form: var(--bg-signin);
   --bg-footer: #e5e5e5;
+  --bg-light: var(--bg-signin);
 
   --h1-hero-color: #0D3B66;
   --h1-transaction-title-color: #ffffff;
@@ -54,15 +55,7 @@
   --color-divider-green: #198754;
   --color-divider-gray: #66677A;
 
-/* progress ring scores [%] */
-/* --score-income will be calculated */
-  --score-income: 65; /* TEMPORARY VALUE! (total income * 100) / (total income + total expense) = score-income */
-  --score-expense: calc(100 - var(--score-income));
-
-  --total-income: 6500;   /* TEMPORARY VALUE! Value will be calculated automatically */
-  --total-expense: 3500;  /* TEMPORARY VALUE! Value will be calculated automatically */
-  --total-balance: 10000;  /* TEMPORARY VALUE! Value will be calculated automatically */
-/* progress ring width */
+  /* progress ring width */
   --ring-width: 5%;
 }
 
@@ -148,7 +141,8 @@ body {
   min-height: 100vh;
 }
 
-#hero-title {
+#hero-title,
+#financial-summary-heading {
   color: var(--h1-hero-color);
   text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.75);
 }
@@ -569,7 +563,12 @@ hr.summary-divider {
   min-width: 15rem;
 }
 
-.summary-title h2 {
+#financial-summary-heading {
+  text-align: center;
+  font-size: clamp(1.5rem, calc(0.5rem + 5vw), 3.5rem);
+}
+
+.summary-title h2 { /* tables heading */
   color: var(--summary-title-color);
   margin: 0;
 }
@@ -584,6 +583,7 @@ hr.summary-divider {
   align-items: flex-start;
   justify-content: center;
   
+  margin-top: 3rem;
   row-gap: 5rem;
   column-gap: 1rem;
 }
@@ -607,117 +607,77 @@ tbody td a:hover {
 }
 
 /* Progress ring style */
-#progress-ring {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  width: 100%;
-  border: none;
-}
-
 .semi-ring-wrapper {
-  width: clamp(19rem, 100%, 37.5rem);   /* 304 - 600 px */
-  padding-bottom: 1.5rem;
-  aspect-ratio: 2 / 1;
-
-  align-items: flex-end;
-  justify-content: center;
-
+  position: relative; /* related with .ring-score */
   background-color: transparent;
   border: none;
+  width: clamp(15rem, 100%, 37.5rem);   /* 240 - 600 px */
+
+  aspect-ratio: 2 / 1;  /* show only upper half of circles */
   overflow: hidden;
 }
 
-.semi-ring {
-  width: 100%;
-  height: 100%;
-}
-
-.rings {
-  width: 100%;
-  height: 200%;
-  transform: rotate(-90deg);
-}
-
 .ring {
-  width: 100%;
-  height: 100%;
-
-  fill: transparent;
+  fill: none;
   stroke-width: var(--ring-width);
 }
 
 .ring.bg {
-stroke: rgb(var(--balance-primary-color));
-opacity: 0.25;
-stroke-dasharray: 0.5 0.5;
-stroke-dashoffset: 0.25;
-}
-
-@property --progressAnimation {
-syntax: "<number>";
-inherits: false;
-initial-value: 0;
+  stroke: rgb(var(--balance-primary-color));
+  opacity: 0.25;
+  stroke-dasharray: var(--total-path-length) 0;  /* full stroke, no gap */
 }
 
 .ring.green {
-  stroke: rgb(var(--income-primary-color));
   --glow-color: var(--income-primary-color);
-
-  stroke-dasharray: calc(0.5 * (var(--total-income) / var(--total-balance)) * var(--progressAnimation)) 1;
-  stroke-dashoffset: -0.25;
-
-  transform: scaleX(-1);
+  
+  stroke: rgb(var(--income-primary-color));
+  stroke-dasharray: 0 var(--total-path-length); /* initial state – ring not filled */
+  transform: scaleX(-1); /* counter-clockwise direction */
   transform-origin: center;
+  stroke-dashoffset: -50; /* move stroke start position at 3 o'clock */
 
-  animation: ringGrow 2s ease-out forwards;
+  animation: fillAnimation 2s ease-out forwards;
 }
+
 .ring.red {
-  stroke: rgb(var(--expense-primary-color));
   --glow-color: var(--expense-primary-color);
 
-  stroke-dasharray: calc(0.5 * (var(--total-expense) / var(--total-balance)) * var(--progressAnimation)) 1;
-  stroke-dashoffset: -0.75;
+  stroke: rgb(var(--expense-primary-color));
+  stroke-dasharray: 0 var(--total-path-length); /* initial state – ring not filled */
+  stroke-dashoffset: -50;   /* move stroke start position at 9 o'clock */
 
-  animation: ringGrow 2s ease-out forwards;
+  animation: fillAnimation 2s ease-out forwards;
 }
 
-@keyframes ringGrow {
-  0% {
-    --progressAnimation: 0;
-    filter: drop-shadow(0 0 7.5px rgb(var(--glow-color)));
-  }
-  100% {
-    --progressAnimation: 1;
+@keyframes fillAnimation {
+  to {
+    stroke-dasharray: var(--progress-value) var(--gap-value); /* values are calculated in JS */
     filter: drop-shadow(0 0 7.5px rgb(var(--glow-color)));
   }
 }
 
 .ring-score {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: flex-start;
-  justify-content: center;
-  padding-top: 30%;
-  font-size: clamp(1.5rem, 7.5vw, 3rem);
+  position: absolute; /* related with .semi-ring-wrapper */
+  display: inline-flex; /* score in one line */
+  column-gap: 0.2em;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  font-size: clamp(1.5rem, 7.5vw, 3.5rem);
   font-weight: bolder;
-  gap: 0.5rem;
 }
 
 .ring-score .expense {
   color: rgb(var(--expense-primary-color));
 }
 
-.ring-score .expense::after {
-  content: "%"
-}
-
 .ring-score .income {
   color: rgb(var(--income-primary-color));
 }
 
+.ring-score .expense::after,
 .ring-score .income::after {
   content: "%"
 }
@@ -742,8 +702,4 @@ initial-value: 0;
 
 .negative span {
   color: rgb(var(--expense-primary-color));
-}
-
-p.positive {  /* Temporaty: will be controlled by JS */
-  display: block;
 }
