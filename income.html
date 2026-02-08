@@ -46,7 +46,7 @@
             </a>
           </li>
           <li>
-            <a href="./expense.html" class="" aria-current="">
+            <a href="./expense.html">
               <img src="./assets/images/icons/credit-card.svg" alt="" aria-hidden="true">
               Add Expense
             </a>
@@ -73,7 +73,7 @@
             <a href="./income.html" class="active" aria-current="page">Add Income</a>
           </li>
           <li>
-            <a href="./expense.html" class="" aria-current="">Add Expense</a>
+            <a href="./expense.html">Add Expense</a>
           </li>
           <li>
             <a href="./overview.html">View Balance</a>
@@ -94,12 +94,13 @@
   <main id="main" class="py-5 px-2 px-sm-5">
 
     <div class="transaction-section d-flex flex-column m-auto">
-      <section class="transaction-header bg-dark py-3" aria-labelledby="transaction-title">
-        <h1 class="transaction-title" aria-label="transaction-title">Add Income</h1>
+      <section class="transaction-header bg-dark py-3">
+        <h1 class="transaction-title">Add Income</h1>
       </section>
       <section class="transaction-form p-5">
 
-        <form id="transaction-form" aria-labelledby="transaction-title">
+        <form id="transaction-form">
+          <h2 class="visually-hidden">Transaction Form</h2>
           <div class="input-group mb-3">
             <div class="form-floating">
               <input
@@ -128,7 +129,7 @@
           </div>
 
           <div class="form-floating mb-3">
-            <select id="transaction-category" class="form-select">
+            <select id="transaction-category" class="form-select" required>
               <option value="" disabled selected>Choose category...</option>
               <option value="1">Salary</option>
               <option value="2">Bank Interest</option>
@@ -144,7 +145,7 @@
           </div>
 
           <div class="d-flex gap-3 justify-content-end">
-            <a href="./dashboard.html" class="btn btn-outline-secondary fw-semibold" aria-label="Go to homepage">Back Home</a>
+            <a href="./dashboard.html" class="btn btn-outline-secondary fw-semibold">Back Home</a>
             <button type="submit" class="btn btn-primary fw-semibold">Add</button>
           </div>
 

@@ -94,12 +94,13 @@
   <main id="main" class="py-5 px-2 px-sm-5">
 
     <div class="transaction-section d-flex flex-column m-auto">
-      <section class="transaction-header bg-dark py-3" aria-labelledby="transaction-title">
-        <h1 class="transaction-title" aria-label="transaction-title">Add Expense</h1>
+      <section class="transaction-header bg-dark py-3">
+        <h1 class="transaction-title">Add Expense</h1>
       </section>
       <section class="transaction-form p-5">
 
-        <form id="transaction-form" aria-labelledby="transaction-title">
+        <form id="transaction-form">
+          <h2 class="visually-hidden">Transaction Form</h2>
           <div class="input-group mb-3">
             <div class="form-floating">
               <input
@@ -128,7 +129,7 @@
           </div>
 
           <div class="form-floating mb-3">
-            <select id="payment-methods" class="form-select">
+            <select id="payment-methods" class="form-select" required>
               <option value="" disabled selected>Choose payment method...</option>
               <option value="1">Cash</option>
               <option value="2">Credit Card</option>
@@ -138,7 +139,7 @@
           </div>
 
           <div class="form-floating mb-3">
-            <select id="transaction-category" class="form-select">
+            <select id="transaction-category" class="form-select" required>
               <option value="" disabled selected>Choose category...</option>
               <option value="1">Food</option>
               <option value="2">Housing</option>
@@ -167,7 +168,7 @@
           </div>
 
           <div class="d-flex gap-3 justify-content-end">
-            <a href="./dashboard.html" class="btn btn-outline-secondary fw-semibold" aria-label="Go to homepage">Back Home</a>
+            <a href="./dashboard.html" class="btn btn-outline-secondary fw-semibold">Back Home</a>
             <button type="submit" class="btn btn-primary fw-semibold">Add</button>
           </div>
 

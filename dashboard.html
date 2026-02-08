@@ -93,9 +93,10 @@
   </header>
 
   <main id="main">
-    <section class="dashboard-section" aria-label="Financial dashboard">
-      <section class="monthly-overview-wrapper" aria-labelledby="monthly-overview-title">
-        <h1 id="monthly-overview-title">Your Monthly Overwiev</h1>
+    <div class="dashboard-section">
+      <h1 class="visually-hidden">Financial Dashboard</h1>
+      <section class="monthly-overview-wrapper">
+        <h2 id="monthly-overview-title">Your Monthly Overview</h2>
 
         <div class="monthly-summary-items">
           <div class="item-label income-item">
@@ -121,22 +122,23 @@
         <hr class="summary-divider" role="presentation">
       </div>
 
-      <section class="quick-actions-wrapper" aria-label="Quick actions">
-          <div class="quick-action-label income-action">
-            <a class="action-content action-content-income" href="./income.html" aria-label="Add income">
-              <img src="./assets/images/icons/plus-lg.svg" alt="" aria-hidden="true">
-              <span>Add Income</span>
-            </a>
-          </div>
-          <div class="quick-action-label expense-action">
-            <a class="action-content action-content-expense" href="./expense.html" aria-label="Add expense">
-              <img src="./assets/images/icons/dash.svg" alt="" aria-hidden="true">
-              <span>Add Expense</span>
-            </a>
-          </div>
-        </section>
-
+      <section class="quick-actions-wrapper">
+        <h2 class="visually-hidden">Quick Actions</h2>
+        <div class="quick-action-label income-action">
+          <a class="action-content action-content-income" href="./income.html">
+            <img src="./assets/images/icons/plus-lg.svg" alt="" aria-hidden="true">
+            <span>Add Income</span>
+          </a>
+        </div>
+        <div class="quick-action-label expense-action">
+          <a class="action-content action-content-expense" href="./expense.html">
+            <img src="./assets/images/icons/dash.svg" alt="" aria-hidden="true">
+            <span>Add Expense</span>
+          </a>
+        </div>
       </section>
+
+    </div>
   </main>
 
   <footer id="footer">
