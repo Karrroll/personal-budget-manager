@@ -204,6 +204,11 @@ body {
   text-align: center;
 }
 
+.required-sing::after {
+  content: " *";
+  color: red;
+}
+
 /* ------------------------ dashboard.html STYLES ------------------------------------------*/
 /* HEADER STYLES */
 #header-homepage {

@@ -29,7 +29,7 @@
       </div>
 
       <form id="signup-form" class="mx-auto py-5">
-        <p class="required-note">*Reqiured</p>
+        <p class="required-note required-sing">Reqiured</p>
         <div class="signup-fields">
           <div class="form-floating">
             <input type="text" class="form-control" id="form-signup-name" name="name" autocomplete="given-name" placeholder=" ">
@@ -37,20 +37,20 @@
           </div>
           <div class="form-floating">
             <input type="email" class="form-control" id="form-signup-email" name="email" autocomplete="email" placeholder=" " required>
-            <label for="form-signup-email">Email Address *</label>
+            <label for="form-signup-email" class="required-sing">Email Address</label>
           </div>
           <div class="form-floating">
             <input type="password" class="form-control" id="form-signup-password" name="password" autocomplete="new-password" placeholder="Password" required>
-            <label for="form-signup-password">Password *</label>
+            <label for="form-signup-password" class="required-sing">Password</label>
           </div>
           <div class="form-floating">
             <input type="password" class="form-control" id="form-signup-confirm-password" name="confirm-password" autocomplete="new-password" placeholder="Confirm Password" required>
-            <label for="form-signup-confirm-password">Confirm Password *</label>
+            <label for="form-signup-confirm-password" class="required-sing">Confirm Password</label>
           </div>
         </div>
         <div class="terms-note form-check">
           <input type="checkbox" class="form-check-input" id="signupTerms" value="remember-me" required>
-          <label class="form-check-label" for="signupTerms">I have read and agree <a href="" class="terms-link">Terms & Conditions *</a></label>
+          <label class="form-check-label required-sing" for="signupTerms">I have read and agree <a href="" class="terms-link">Terms & Conditions</a></label>
         </div>
         <div class="button-content-center">
           <button class="btn btn-primary fw-semibold py-2" type="submit">Create account</button>
