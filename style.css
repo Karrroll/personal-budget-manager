@@ -26,17 +26,12 @@
 /* backgrounds */
   --bg-primary: linear-gradient(135deg, #E4F2FF 0%, #D8F8F2 50%, #DFFFE8 100%);
   --bg-header: #ececec;
-  --bg-sidemenu: #fafafa;
-  --bg-monthly-summary: #ffffff;
-  --bg-signin:  #fafafa;
-  --bg-transaction-form: var(--bg-signin);
+  --bg-sidemenu: #ffffff;
+  --bg-light: #fafafa;
   --bg-footer: #e5e5e5;
-  --bg-light: var(--bg-signin);
 
   --h1-hero-color: #0D3B66;
-  --h1-transaction-title-color: #ffffff;
-  --summary-title-color: #ffffff;
-  --bg-summary-form: #fafafa;
+  --white-title-color: #ffffff;
 
   /* navmenu */
   --menu-text-color: #333333;
@@ -47,7 +42,10 @@
   --income-primary-color: 76 175 80; /*green*/
   --expense-primary-color: 244 67 54; /*red*/
   --balance-primary-color: 0 0 0; /*black*/
-
+  
+  /* dashboard items size */
+  --dashboard-item-size: 150px;
+  --dashboard-quick-item-size: 100px;
   /* font-color */
   --black-font: #000000;
 
@@ -101,10 +99,6 @@
   animation: gradientDiagonal 5s ease infinite;
 }
 
-#main .container {
-  margin: auto auto;
-}
-
 #header {
   padding: 1rem 0;
   background-color: var(--bg-header);
@@ -116,7 +110,7 @@
 }
 
 #signin-form, #signup-form {
-  background-color: var(--bg-signin);
+  background-color: var(--bg-light);
   width: min(100%, max(21.875rem, 35%));
   padding-left: min(calc(8.5vw - 0.5rem), 3rem);
   padding-right: min(calc(8.5vw - 0.5rem), 3rem);
@@ -278,6 +272,7 @@ nav a:hover:not(.sidebar-menu-icon) {
   gap: 1rem;
 
   background-color: var(--bg-sidemenu);
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
 }
 
 .sidebar-menu-icon img {
@@ -328,30 +323,16 @@ nav a:hover:not(.sidebar-menu-icon) {
 
 /*  DASHBOARD */
 .dashboard-section {
-  background-color: var(--bg-monthly-summary);
+  background-color: var(--bg-light);
+  border-radius: 2rem;
   padding: 2.5rem clamp(2.5rem, 5vw, 5rem);
-
-  display: flex;
-  flex-direction: column;
-  
-  margin: auto;
-}
-
-@media (min-width: 768px) {
-  .dashboard-section {
-    flex-direction: row;
-  }
 }
 
 /* DASHBOARD - MONTHLY SUMMARY */
-.monthly-overview-wrapper {
-  display: flex;
-  flex-direction: column;
-}
-
 #monthly-overview-title {
   text-align: center;
   font-weight: bolder;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
 }
 
 .monthly-summary-items {
@@ -386,8 +367,8 @@ nav a:hover:not(.sidebar-menu-icon) {
 .item-label {
   --item-color: 0 0 0; /* default value */
 
-  width: 150px;
-  height: 150px;
+  width: var(--dashboard-item-size);
+  aspect-ratio: 1;
   border-radius: 50%;
   
   display: flex;
@@ -469,8 +450,8 @@ hr.summary-divider {
   --action-color: 0 0 0;  /* default value */
 
   padding: 1rem;
-  width: 100px;
-  aspect-ratio: 1/1;
+  width: var(--dashboard-quick-item-size);
+  aspect-ratio: 1;
   border-radius: 1rem;
 
   display: inline-flex;
@@ -532,7 +513,7 @@ hr.summary-divider {
 }
 
 .transaction-section {
-  background-color: var(--bg-transaction-form);
+  background-color: var(--bg-light);
   box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
   overflow: hidden;
   border-radius: 2rem;
@@ -540,7 +521,7 @@ hr.summary-divider {
 }
 
 .transaction-title {
-  color: var(--h1-transaction-title-color);
+  color: var(--white-title-color);
   text-align: center;
   margin: 0;
 }
@@ -555,7 +536,7 @@ hr.summary-divider {
 }
 
 #select-custom-dates {
-  background-color: var(--bg-summary-form);
+  background-color: var(--bg-light);
   padding: 0.75rem;
   border-radius: 0.25rem;
 
@@ -574,7 +555,7 @@ hr.summary-divider {
 }
 
 .summary-title h2 { /* tables heading */
-  color: var(--summary-title-color);
+  color: var(--white-title-color);
   margin: 0;
 }
 
