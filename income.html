@@ -101,22 +101,27 @@
 
         <form id="transaction-form">
           <h2 class="visually-hidden">Transaction Form</h2>
-          <div class="input-group mb-3">
-            <div class="form-floating">
-              <input
-                      id="amount"
-                      class="form-control"
-                      type="number"
-                      placeholder=" "
-                      value="0.00"
-                      min="0.1"
-                      step="0.01"
-                      required
-              >
-              <label for="amount">Amount</label>
+            <div class="input-group mb-3">
+              <div class="form-floating">
+                <input
+                  id="amount"
+                  class="form-control"
+                  type="number"
+                  placeholder=" "
+                  value="0.00"
+                  min="0.01"
+                  max="999999.99"
+                  step="0.01"
+                  required
+                  aria-describedby="amount-help"
+                >
+                <label for="amount">Amount</label>
+              </div>
+              <span class="input-group-text">PLN</span>
+              <small id="amount-help" class="form-text text-muted w-100">
+                Enter amount between 0.01 and 999 999.99 PLN
+              </small>
             </div>
-            <span class="input-group-text">PLN</span>
-          </div>
 
           <div class="form-floating mb-3">
             <input
