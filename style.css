@@ -60,13 +60,6 @@
   --ring-width: 5%;
 }
 
-/* main background style */
-@keyframes gradientDiagonal {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
 /*header login layout*/
 @media (min-width: 768px) and (max-width: 992px)  {
   #header-content:has(.collapse.show) {
@@ -94,12 +87,33 @@
 #main {
   display: flex;
   flex: 1;
+  position: relative; /* for main::before*/
+  overflow: hidden;
+}
+
+#main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background-image: var(--bg-primary);
   background-repeat: no-repeat;
   background-size: 400% 400%;
-  background-attachment: scroll;
-  background-position: center, center;
+  z-index: -1;
+  will-change: background-position;
   animation: gradientDiagonal 5s ease infinite;
+}
+
+/* main background style */
+@keyframes gradientDiagonal {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #main::before {
+    animation: none;
+  }
 }
 
 #header {
