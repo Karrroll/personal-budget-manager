@@ -58,6 +58,9 @@
 
   /* progress ring width */
   --ring-width: 5%;
+
+  /* error note color */
+  --error-note: #ff0000;
 }
 
 /*header login layout*/
@@ -138,6 +141,12 @@
 
 #signup-form {
   width: min(100%, max(27.5rem, 40%));
+}
+
+.error-note {
+  color: var(--error-note);
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
 }
 
 #footer {
