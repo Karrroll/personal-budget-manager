@@ -54,7 +54,7 @@
   }
 // ------------------------------------------------------
 
-  //Back to form if any error
+  //Back to form page if any error
   if(!empty($errors)) {
     $_SESSION['errors'] = $errors;
     $_SESSION['old'] = $old;
@@ -62,6 +62,27 @@
     header('Location: signup.php');
     exit();
   }
+
+  require_once "connect.php";
+  
+  //check if email exist in database
+  try {
+    $stmt = $connection->prepare('SELECT id FROM users WHERE email = :email');
+    $stmt->bindValue(':email', strtolower($email), PDO::PARAM_STR);
+    $stmt->execute();
+
+    if($stmt->fetch()) {
+      $errors['email'] = "Address email already exist";
+      $_SESSION['errors'] = $errors;
+      header('Location: signup.php');
+      exit();
+    }
+  } catch(PDOException $e) {
+    echo "Error occurred, please try again later";
+  }
+
+  $email = strtolower($email);
+  $password_hash = password_hash($password, PASSWORD_BCRYPT);
 
     //SUCCESS
     header('Location: signup.php');
