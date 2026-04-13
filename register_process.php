@@ -67,7 +67,7 @@
   
   //check if email exist in database
   try {
-    $stmt = $connection->prepare('SELECT id FROM users WHERE email = :email');
+    $stmt = $connection->prepare('SELECT `id` FROM users WHERE email = :email');
     $stmt->bindValue(':email', strtolower($email), PDO::PARAM_STR);
     $stmt->execute();
 
@@ -78,13 +78,35 @@
       exit();
     }
   } catch(PDOException $e) {
-    echo "Error occurred, please try again later";
+    error_log($e->getMessage());
+    $errors['general'] = "Cannot create account right now. Please try again later.";
+    $_SESSION['errors'] = $errors;
+    header('Location: index.php');
+    exit();
   }
 
   $email = strtolower($email);
   $password_hash = password_hash($password, PASSWORD_BCRYPT);
+  
+  //add user to database
+  try {
+    $stmt = $connection->prepare('INSERT INTO users(`username`, `password`, `email`) VALUES(:username, :password_hash, :email)');
+    
+    $stmt->bindValue(':username', $username, $username === NULL ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
+    $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+    
+    $stmt->execute();
+   } catch(PDOException $e) {
+    error_log($e->getMessage());
+    $errors['general'] = "Cannot create account right now. Please try again later.";
+    $_SESSION['errors'] = $errors;
+    header('Location: index.php');
+    exit();
+  }
 
     //SUCCESS
-    header('Location: signup.php');
+    $_SESSION['success'] = "Account created! Please sign in.";
+    header('Location: index.php');
     exit();
 ?>
