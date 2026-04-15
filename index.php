@@ -1,3 +1,7 @@
+<?php
+  session_start();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -39,7 +43,7 @@
             Sign in
           </button>
 
-          <a href="./signup.html" class="btn btn-primary button-content-center text-nowrap gap-1 "
+          <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1 "
             aria-label="Go to signup page">
             <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
             Sign up
@@ -62,8 +66,18 @@
 
       <form id="signin-form" class="mx-auto mt-md-5 py-5">
         <div class="signup-note">
-          <p>Don't have an account? <a class="signup-link" href="./signup.html">Create an account here</a></p>
+          <p>Don't have an account? <a class="signup-link" href="./signup.php">Create an account here</a></p>
         </div>
+        <?php
+          if(isset($_SESSION['success']))
+            echo '<div class="alert alert-success text-center" role="alert">' .$_SESSION['success'] .'</div>';
+
+          if(isset($_SESSION['errors'])) {
+            foreach ($_SESSION['errors'] as $error)
+              echo '<div class="alert alert-danger text-center" role="alert">' . $error . '</div>'; 
+          }
+          unset($_SESSION['errors'], $_SESSION['success']);
+        ?>
         <div class="form-floating">
           <input type="email" class="form-control" id="formLoginEmail" name="email" autocomplete="email" placeholder="name@example.com" required>
           <label for="formLoginEmail">Email address</label>
