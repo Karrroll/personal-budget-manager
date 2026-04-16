@@ -19,7 +19,7 @@
   <header id="header">
     <div id="header-content" class="container d-flex flex-column flex-md-row gap-2 align-items-center justify-content-sm-between">
       <div>
-        <a href="/" aria-label="Go to homepage">
+        <a href="./index.php" aria-label="Go to homepage">
           <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
       </div>
@@ -64,26 +64,49 @@
         <hr class="article-divider" role="presentation">
       </div>
 
-      <form id="signin-form" class="mx-auto mt-md-5 py-5">
+      <form
+        id="signin-form"
+        class="mx-auto mt-md-5 py-5"
+        action="signin_process.php"
+        method="POST"
+      >
         <div class="signup-note">
-          <p>Don't have an account? <a class="signup-link" href="./signup.php">Create an account here</a></p>
+          <p>Don't have an account?
+            <a class="signup-link" href="./signup.php">Create an account here</a>
+          </p>
         </div>
         <?php
           if(isset($_SESSION['success']))
-            echo '<div class="alert alert-success text-center" role="alert">' .$_SESSION['success'] .'</div>';
+            echo '<div class="alert alert-success text-success text-center" role="alert">' .$_SESSION['success'] .'</div>';
 
           if(isset($_SESSION['errors'])) {
             foreach ($_SESSION['errors'] as $error)
-              echo '<div class="alert alert-danger text-center" role="alert">' . $error . '</div>'; 
+              echo '<div class="alert alert-danger text-danger text-center" role="alert">' . $error . '</div>'; 
           }
-          unset($_SESSION['errors'], $_SESSION['success']);
         ?>
         <div class="form-floating">
-          <input type="email" class="form-control" id="formLoginEmail" name="email" autocomplete="email" placeholder="name@example.com" required>
+          <input
+            type="email"
+            id="formLoginEmail"
+            class="form-control <?= isset($_SESSION['errors']['email']) || isset($_SESSION['errors']['credentials']) ? 'is-invalid' : '' ?>"
+            name="email"
+            value="<?= htmlspecialchars($_SESSION['old']['email'] ?? '') ?>"
+            autocomplete="email"
+            placeholder="name@example.com"
+            required
+          >
           <label for="formLoginEmail">Email address</label>
         </div>
-        <div class="form-floating">
-          <input type="password" class="form-control" id="formLoginPassword" name="password" autocomplete="current-password" placeholder="Password" required>
+        <div class="mt-1 form-floating">
+          <input
+            type="password"
+            id="formLoginPassword"
+            class="form-control <?= isset($_SESSION['errors']['password']) || isset($_SESSION['errors']['credentials']) ? 'is-invalid' : '' ?>"
+            name="password"
+            autocomplete="current-password"
+            placeholder="Password"
+            required
+          >
           <label for="formLoginPassword">Password</label>
         </div>
         <div class="form-check text-start my-3">
@@ -93,6 +116,9 @@
         <div class="button-content-center">
           <button class="btn btn-success px-5 py-2" type="submit">Sign in</button>
         </div>
+        <?php
+          unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
+        ?>
       </form>
     </div>
   </main>
