@@ -38,7 +38,7 @@
         action="register_process.php"
         method="POST"
       >
-        <p class="required-note required-sing">Reqiured</p>
+        <p class="required-note required-sign">Reqiured</p>
         <div class="signup-fields">
           <?php
             if(isset($_SESSION['errors'])) {
@@ -70,7 +70,7 @@
                 placeholder=" "
                 required 
               >
-              <label for="form-signup-email" class="required-sing">Email Address</label>
+              <label for="form-signup-email" class="required-sign">Email Address</label>
             </div>
 
             <div class="form-floating">
@@ -83,7 +83,7 @@
                 placeholder="Password"
                 required 
               >
-              <label for="form-signup-password" class="required-sing">Password</label>
+              <label for="form-signup-password" class="required-sign">Password</label>
             </div>
 
             <div class="form-floating">
@@ -96,7 +96,7 @@
                 placeholder="Confirm Password"
                 required 
               >
-              <label for="form-signup-confirm-password" class="required-sing">Confirm Password</label>
+              <label for="form-signup-confirm-password" class="required-sign">Confirm Password</label>
             </div>
         </div>
 
@@ -108,9 +108,9 @@
             name="terms"
             value="remember-me"
           >
-          <label class="form-check-label required-sing" for="signupTerms">
+          <label class="form-check-label" for="signupTerms">
             I have read and agree
-            <a href="" class="text-nowrap terms-link">Terms & Conditions</a>
+            <a href="" class="text-nowrap terms-link">Terms & Conditions<span class="required-sign-nowrap ms-1">*</span></a>
           </label>
         </div>
 

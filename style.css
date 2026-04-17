@@ -201,11 +201,16 @@ body {
   text-align: center;
 }
 
-.required-sing::after {
+.required-sign::after {
   content: " *";
   color: red;
 }
 
+.required-sign-nowrap {
+  display: inline-block;
+  text-decoration: none;
+  color: red;
+}
 /* ------------------------ dashboard.html STYLES ------------------------------------------*/
 /* HEADER STYLES */
 #header-homepage {
