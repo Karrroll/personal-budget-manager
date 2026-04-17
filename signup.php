@@ -16,7 +16,7 @@
 <body>
   <header id="header">
     <div id="header-content" class="container d-flex justify-content-center">
-        <a href="./index.html" aria-label="Go to homepage">
+        <a href="./index.php" aria-label="Go to homepage">
           <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
     </div>
@@ -123,7 +123,7 @@
         <div class="signin-note">
           <p>
             Already have an account?
-            <a class="signin-link" href="./index.html">Signin</a>
+            <a class="signin-link" href="./index.php">Signin</a>
           </p>
         </div>
         <?php
