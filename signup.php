@@ -39,7 +39,13 @@
         method="POST"
       >
         <p class="required-note required-sing">Reqiured</p>
-        <div class="signup-fields"> 
+        <div class="signup-fields">
+          <?php
+            if(isset($_SESSION['errors'])) {
+              foreach ($_SESSION['errors'] as $error)
+                echo '<div class="alert alert-danger text-danger text-center" role="alert">' . $error . '</div>'; 
+            }
+          ?>
           <div class="form-floating">
               <input
                 type="text"
@@ -51,11 +57,6 @@
                 placeholder=" "
               >
               <label for="form-signup-name">Username</label>
-              <?php
-                if(isset($_SESSION['errors']['username'])) {
-                  echo '<div class="error-note">' .$_SESSION['errors']['username'] .'</div>';
-                }
-              ?>
             </div>
 
             <div class="form-floating">
@@ -70,11 +71,6 @@
                 required 
               >
               <label for="form-signup-email" class="required-sing">Email Address</label>
-              <?php
-                if(isset($_SESSION['errors']['email'])) {
-                  echo '<div class="error-note">' .$_SESSION['errors']['email'] .'</div>';
-                }
-              ?>
             </div>
 
             <div class="form-floating">
@@ -88,11 +84,6 @@
                 required 
               >
               <label for="form-signup-password" class="required-sing">Password</label>
-              <?php
-                if(isset($_SESSION['errors']['password'])) {
-                  echo '<div class="error-note">' .$_SESSION['errors']['password'] .'</div>';
-                }
-              ?>
             </div>
 
             <div class="form-floating">
@@ -121,12 +112,6 @@
             I have read and agree
             <a href="" class="text-nowrap terms-link">Terms & Conditions</a>
           </label>
-
-          <?php
-            if(isset($_SESSION['errors']['terms'])) {
-              echo '<div class="error-note">' .$_SESSION['errors']['terms'] .'</div>';
-            }
-          ?>
         </div>
 
         <div class="button-content-center">
@@ -141,7 +126,6 @@
             <a class="signin-link" href="./index.html">Signin</a>
           </p>
         </div>
-        
         <?php
           unset($_SESSION['errors'], $_SESSION['old']);
         ?>

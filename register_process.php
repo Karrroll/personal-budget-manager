@@ -97,7 +97,7 @@
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     
     $stmt->execute();
-   } catch(PDOException $e) {
+  } catch(PDOException $e) {
     error_log($e->getMessage());
     $errors['general'] = "Cannot create account right now. Please try again later.";
     $_SESSION['errors'] = $errors;
@@ -105,8 +105,8 @@
     exit();
   }
 
-    //SUCCESS
-    $_SESSION['success'] = "Account created! Please sign in.";
-    header('Location: index.php');
-    exit();
+  //SUCCESS
+  $_SESSION['success'] = "Account created! Please sign in.";
+  header('Location: index.php');
+  exit();
 ?>
