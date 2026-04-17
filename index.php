@@ -17,38 +17,18 @@
 
 <body>
   <header id="header">
-    <div id="header-content" class="container d-flex flex-column flex-md-row gap-2 align-items-center justify-content-sm-between">
+    <div id="header-content" class="container d-flex flex-column flex-sm-row gap-2 align-items-center justify-content-sm-between">
       <div>
         <a href="./index.php" aria-label="Go to homepage">
           <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
       </div>
 
-      <div class="header-login">
-        <div class="collapse collapse-horizontal login-collapse-width" id="collapseWidthExample">
-          <div class="d-md-flex">
-            <input type="email" class="form-control" id="headerLoginEmail" name="email" autocomplete="email" placeholder="name@example.com" required>
-            <label class="visually-hidden" for="headerLoginEmail">Email address</label>
-
-            <input type="password" class="form-control" id="headerLoginPassword" name="password" autocomplete="current-password" placeholder="Password" required>
-            <label class="visually-hidden" for="headerLoginPassword">Password</label>
-          </div>
-        </div>
-
-        <div class="d-flex flex-column flex-md-row gap-2">
-          <button type="button" class="btn btn-success button-content-center text-nowrap gap-1"
-            data-bs-toggle="collapse" data-bs-target="#collapseWidthExample" aria-expanded="false"
-            aria-controls="collapseWidthExample">
-            <img src="./assets/images/icons/box-arrow-in-right.svg" alt="" aria-hidden="true">
-            Sign in
-          </button>
-
-          <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1 "
-            aria-label="Go to signup page">
-            <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
-            Sign up
-          </a>
-        </div>
+      <div>
+        <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1" aria-label="Go to signup page">
+          <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
+          Sign up
+        </a>
       </div>
     </div>
   </header>
