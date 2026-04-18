@@ -107,10 +107,11 @@
                 value="<?= htmlspecialchars($_SESSION['old']['username'] ?? '') ?>"
                 autocomplete="username"
                 placeholder=" "
+                required
                 aria-describedby="<?= isset($_SESSION['errors']['username']) ? 'username-error' : '' ?>"
                 aria-invalid="<?= isset($_SESSION['errors']['username']) ? 'true' : 'false' ?>"
               >
-              <label for="form-signup-name">Username</label>
+              <label for="form-signup-name" class="required-sign">Username</label>
             </div>
 
             <div class="form-floating">

@@ -36,18 +36,15 @@
     $errors['password_both'] = "Passwords do not match";
   }
 
-  //validate username (optional field)
-  if ($username !== '') {
-    
-    if (mb_strlen($username) < 3) {
-      $errors['username'] = "Username must contain at least 3 characters";
-    } else if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
-      $errors['username'] = "Username can only contain letters, numbers, and underscores";
-    }
-  } else {
-    $username = NULL; //convert to NULL for daatbase(needed?)
+  //validate username
+  if ($username === '') {
+    $errors['username'] = "Username field is required";
+  } else if (mb_strlen($username) < 3) {
+    $errors['username'] = "Username must contain at least 3 characters";
+  } else if (!preg_match('/^[a-zA-Z0-9_]+$/', $username)) {
+    $errors['username'] = "Username can only contain letters, numbers, and underscores";
   }
- 
+
   //validate terms checkbox
   if ($terms === NULL) {
     $errors['terms'] = "You must accept Terms & Conditions";
@@ -65,17 +62,38 @@
 
   require_once "connect.php";
   
-  //check if email exist in database
+  //check if email or username exist in database
   try {
-    $stmt = $connection->prepare('SELECT `id` FROM users WHERE email = :email');
+    $stmt = $connection->prepare('SELECT `username`, `email` FROM users WHERE email = :email OR username = :username');
     $stmt->bindValue(':email', strtolower($email), PDO::PARAM_STR);
+    $stmt->bindValue(':username', $username, PDO::PARAM_STR);
     $stmt->execute();
 
-    if($stmt->fetch()) {
-      $errors['email'] = "Address email already exist";
-      $_SESSION['errors'] = $errors;
-      header('Location: signup.php');
-      exit();
+    $existing_users = $stmt->fetchAll();
+
+    if($existing_users) {
+      $exist_email = false;
+      $exist_username = false;
+
+      foreach ($existing_users as $row) {
+        if (!$exist_email && strtolower($row['email']) === strtolower($email)) {
+            $errors['email'] = "Address email already exists";
+            $exist_email = true;
+        }
+        
+        if (!$exist_username && strtolower($row['username']) === strtolower($username)) {
+            $errors['username'] = "Username already exists";
+            $exist_username = true;
+        }
+      }
+
+      if(!empty($errors)) {
+        $_SESSION['errors'] = $errors;
+        $_SESSION['old'] = $old;
+
+        header('Location: signup.php');
+        exit();
+      }
     }
   } catch(PDOException $e) {
     error_log($e->getMessage());
@@ -85,14 +103,14 @@
     exit();
   }
 
-  $email = strtolower($email);
+  $email = strtolower($email);  //convert email to lowercase befor add user to DB
   $password_hash = password_hash($password, PASSWORD_BCRYPT);
   
   //add user to database
   try {
     $stmt = $connection->prepare('INSERT INTO users(`username`, `password`, `email`) VALUES(:username, :password_hash, :email)');
     
-    $stmt->bindValue(':username', $username, $username === NULL ? PDO::PARAM_NULL : PDO::PARAM_STR);
+    $stmt->bindValue(':username', $username, PDO::PARAM_STR);
     $stmt->bindValue(':password_hash', $password_hash, PDO::PARAM_STR);
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     
