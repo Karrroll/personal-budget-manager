@@ -19,13 +19,13 @@
   <header id="header">
     <div id="header-content" class="container d-flex flex-column flex-sm-row gap-2 align-items-center justify-content-sm-between">
       <div>
-        <a href="./index.php" aria-label="Go to homepage">
-          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
+        <a href="./index.php">
+          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget Manager homepage">
         </a>
       </div>
 
       <div>
-        <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1" aria-label="Go to signup page">
+        <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1">
           <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
           Sign up
         </a>
@@ -49,19 +49,66 @@
         class="mx-auto mt-md-5 py-5"
         action="signin_process.php"
         method="POST"
+        aria-labelledby="form-title"
       >
+        <h2 id="form-title" class="visually-hidden">Sign in</h2>
         <div class="signup-note">
           <p>Don't have an account?
             <a class="signup-link" href="./signup.php">Create an account here</a>
           </p>
         </div>
         <?php
-          if(isset($_SESSION['success']))
-            echo '<div class="alert alert-success text-success text-center" role="alert">' .$_SESSION['success'] .'</div>';
+          if(isset($_SESSION['success'])) {
+            echo '<div
+                    class="alert alert-success text-success text-center"
+                    aria-live="polite"
+                  >'
+                    .$_SESSION['success']
+                  .'</div>'
+            ;
+          }
 
-          if(isset($_SESSION['errors'])) {
-            foreach ($_SESSION['errors'] as $error)
-              echo '<div class="alert alert-danger text-danger text-center" role="alert">' . $error . '</div>'; 
+          if(isset($_SESSION['errors']['general'])) {
+            echo '<div
+                    class="alert alert-danger text-danger text-center"
+                    role="alert"
+                  >'
+                    .$_SESSION['errors']['general']
+                  .'</div>'
+            ;
+          }
+
+          if(isset($_SESSION['errors']['credentials'])) {
+              echo '<div
+                      id="credential-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['credentials']
+                    .'</div>'
+              ;
+          } 
+
+          if(isset($_SESSION['errors']['email'])) {
+              echo '<div 
+                      id="email-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['email']
+                    .'</div>'
+              ;
+          }
+
+          if(isset($_SESSION['errors']['password'])) {
+              echo '<div
+                      id="password-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['password']
+                    .'</div>'
+              ;
           }
         ?>
         <div class="form-floating">
@@ -74,6 +121,11 @@
             autocomplete="email"
             placeholder="name@example.com"
             required
+            aria-describedby="
+                                <?= (isset($_SESSION['errors']['email']) ? 'email-error' : '') ?>
+                                <?= (isset($_SESSION['errors']['credentials']) ? 'credential-error' : '') ?>
+                             "
+            aria-invalid="<?= isset($_SESSION['errors']['email']) || isset($_SESSION['errors']['credentials']) ? 'true' : 'false' ?>"
           >
           <label for="formLoginEmail">Email address</label>
         </div>
@@ -86,6 +138,11 @@
             autocomplete="current-password"
             placeholder="Password"
             required
+            aria-describedby="
+                                <?= (isset($_SESSION['errors']['password']) ? 'password-error' : '') ?>
+                                <?= (isset($_SESSION['errors']['credentials']) ? 'credential-error' : '') ?>
+                             "
+            aria-invalid="<?= isset($_SESSION['errors']['password']) || isset($_SESSION['errors']['credentials']) ? 'true' : 'false' ?>"
           >
           <label for="formLoginPassword">Password</label>
         </div>
