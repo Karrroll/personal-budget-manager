@@ -41,9 +41,10 @@
     $user = $stmt->fetch();
     
     if($user !== false AND password_verify($password, $user['password'])) {
+      session_regenerate_id(true);  // Prevent session fixation attacks
+
       $_SESSION['user_id'] = $user['id'];
       $_SESSION['user_name'] = $user['username'];
-      $_SESSION['user_email'] = $user['email'];
 
       header('Location: dashboard.php');
       exit();
