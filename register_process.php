@@ -21,9 +21,9 @@
     $errors['email'] = "Invalid email address";
   }
 
-  //validate password
+  //validate passwords
   if(($password === '') || ($confirm_password === '')) {
-    $errors['password'] = "Password field is required";
+    $errors['password_both'] = "Password fields are required";
   } else if(mb_strlen($password) < 6) {
     $errors['password'] = "Password must contain at least 6 characters";
   } else if(
@@ -33,7 +33,7 @@
   ) {
     $errors['password'] = "Password must contain uppercase, lowercase, and number";
   } else if($password !== $confirm_password) {
-    $errors['password'] = "Passwords do not match";
+    $errors['password_both'] = "Passwords do not match";
   }
 
   //validate username (optional field)
