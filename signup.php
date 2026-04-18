@@ -170,7 +170,7 @@
             id="signupTerms"
             class="form-check-input"
             name="terms"
-            value="remember-me"
+            value="1"
             required
             aria-describedby="<?= isset($_SESSION['errors']['terms']) ? 'terms-error' : '' ?>"
             aria-invalid="<?= isset($_SESSION['errors']['terms']) ? 'true' : 'false' ?>"

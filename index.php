@@ -147,8 +147,13 @@
           <label for="formLoginPassword">Password</label>
         </div>
         <div class="form-check text-start my-3">
-          <input type="checkbox" class="form-check-input" id="checkDefault" value="remember-me">
-          <label class="form-check-label" for="checkDefault">Remember me</label>
+          <input
+            type="checkbox"
+            id="rememberCheckbox"
+            name="remember"
+            class="form-check-input"
+            value="1">
+          <label class="form-check-label" for="rememberCheckbox">Remember me</label>
         </div>
         <div class="button-content-center">
           <button class="btn btn-success px-5 py-2" type="submit">Sign in</button>
