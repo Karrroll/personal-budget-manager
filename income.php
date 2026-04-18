@@ -17,12 +17,12 @@
   <header id="header" class="d-flex flex-column">
     <div class="container">
       <div id="header-homepage" class="d-flex flex-row align-items-center justify-content-between">
-        <a href="./dashboard.html" aria-label="Go to homepage">
+        <a href="./dashboard.php" aria-label="Go to homepage">
           <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
 
         <div>
-          <a href="./index.html" class="btn btn-dark button-content-center text-nowrap gap-1"
+          <a href="./index.php" class="btn btn-dark button-content-center text-nowrap gap-1"
              aria-label="Sign out of your account">
             <img src="./assets/images/icons/box-arrow-right.svg" alt="" aria-hidden="true">
             Sign out
@@ -38,25 +38,25 @@
             </a>
           </li>
           <li>
-            <a href="./dashboard.html">
+            <a href="./dashboard.php">
               <img src="./assets/images/icons/house-door.svg" alt="" aria-hidden="true">
               Home
             </a>
           </li>
           <li>
-            <a href="./income.html" class="active" aria-current="page">
+            <a href="./income.php" class="active" aria-current="page">
               <img src="./assets/images/icons/cash-coin.svg" alt="" aria-hidden="true">
               Add Income
             </a>
           </li>
           <li>
-            <a href="./expense.html">
+            <a href="./expense.php">
               <img src="./assets/images/icons/credit-card.svg" alt="" aria-hidden="true">
               Add Expense
             </a>
           </li>
           <li>
-            <a href="./overview.html">
+            <a href="./overview.php">
               <img src="./assets/images/icons/clipboard-data.svg" alt="" aria-hidden="true">
               View Balance
             </a>
@@ -71,16 +71,16 @@
 
         <ul class="desktop-nav-menu">
           <li>
-            <a href="./dashboard.html">Home</a>
+            <a href="./dashboard.php">Home</a>
           </li>
           <li>
-            <a href="./income.html" class="active" aria-current="page">Add Income</a>
+            <a href="./income.php" class="active" aria-current="page">Add Income</a>
           </li>
           <li>
-            <a href="./expense.html">Add Expense</a>
+            <a href="./expense.php">Add Expense</a>
           </li>
           <li>
-            <a href="./overview.html">View Balance</a>
+            <a href="./overview.php">View Balance</a>
           </li>
           <li>
             <a href="#">Settings</a>
@@ -154,7 +154,7 @@
           </div>
 
           <div class="d-flex gap-3 justify-content-end">
-            <a href="./dashboard.html" class="btn btn-outline-secondary fw-semibold">Back Home</a>
+            <a href="./dashboard.php" class="btn btn-outline-secondary fw-semibold">Back Home</a>
             <button type="submit" class="btn btn-primary fw-semibold">Add</button>
           </div>
 

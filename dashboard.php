@@ -18,12 +18,12 @@
   <header id="header" class="d-flex flex-column">
     <div class="container">
       <div id="header-homepage" class="d-flex flex-row align-items-center justify-content-between">
-        <a href="./dashboard.html" aria-label="Go to homepage">
+        <a href="./dashboard.php" aria-label="Go to homepage">
           <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
         </a>
 
         <div>
-          <a href="./index.html" class="btn btn-dark button-content-center text-nowrap gap-1"
+          <a href="./index.php" class="btn btn-dark button-content-center text-nowrap gap-1"
              aria-label="Sign out of your account">
             <img src="./assets/images/icons/box-arrow-right.svg" alt="" aria-hidden="true">
             Sign out
@@ -39,25 +39,25 @@
             </a>
           </li>
           <li>
-            <a href="./dashboard.html" class="active" aria-current="page">
+            <a href="./dashboard.php" class="active" aria-current="page">
               <img src="./assets/images/icons/house-door.svg" alt="" aria-hidden="true">
               Home
             </a>
           </li>
           <li>
-            <a href="./income.html">
+            <a href="./income.php">
               <img src="./assets/images/icons/cash-coin.svg" alt="" aria-hidden="true">
               Add Income
             </a>
           </li>
           <li>
-            <a href="./expense.html">
+            <a href="./expense.php">
               <img src="./assets/images/icons/credit-card.svg" alt="" aria-hidden="true">
               Add Expense
             </a>
           </li>
           <li>
-            <a href="./overview.html">
+            <a href="./overview.php">
               <img src="./assets/images/icons/clipboard-data.svg" alt="" aria-hidden="true">
               View Balance
             </a>
@@ -72,16 +72,16 @@
 
         <ul class="desktop-nav-menu">
           <li>
-            <a href="./dashboard.html" class="active" aria-current="page">Home</a>
+            <a href="./dashboard.php" class="active" aria-current="page">Home</a>
           </li>
           <li>
-            <a href="./income.html">Add Income</a>
+            <a href="./income.php">Add Income</a>
           </li>
           <li>
-            <a href="./expense.html">Add Expense</a>
+            <a href="./expense.php">Add Expense</a>
           </li>
           <li>
-            <a href="./overview.html">View Balance</a>
+            <a href="./overview.php">View Balance</a>
           </li>
           <li>
             <a href="#">Settings</a>
@@ -119,7 +119,7 @@
           </div>
         </div>
 
-        <a class="details-link" href="./overview.html" aria-label="Go to full overview of incomes and expenses">Show details ></a>
+        <a class="details-link" href="./overview.php" aria-label="Go to full overview of incomes and expenses">Show details ></a>
       </section>
 
       <div class="divider-wrapper">
@@ -129,13 +129,13 @@
       <section class="quick-actions-wrapper">
         <h2 class="visually-hidden">Quick Actions</h2>
         <div class="quick-action-label income-action">
-          <a class="action-content action-content-income" href="./income.html">
+          <a class="action-content action-content-income" href="./income.php">
             <img src="./assets/images/icons/plus-lg.svg" alt="" aria-hidden="true">
             <span>Add Income</span>
           </a>
         </div>
         <div class="quick-action-label expense-action">
-          <a class="action-content action-content-expense" href="./expense.html">
+          <a class="action-content action-content-expense" href="./expense.php">
             <img src="./assets/images/icons/dash.svg" alt="" aria-hidden="true">
             <span>Add Expense</span>
           </a>
