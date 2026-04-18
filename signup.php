@@ -16,8 +16,8 @@
 <body>
   <header id="header">
     <div id="header-content" class="container d-flex justify-content-center">
-        <a href="./index.php" aria-label="Go to homepage">
-          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
+        <a href="./index.php">
+          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget Manager homepage">
         </a>
     </div>
   </header>
@@ -37,14 +37,66 @@
         class="mx-auto py-5"
         action="register_process.php"
         method="POST"
+        aria-labelledby="form-title"
       >
-        <p class="required-note required-sign">Reqiured</p>
+        <h2 id="form-title" class="visually-hidden">Sign up</h2>
+        <p class="required-note required-sign" aria-hidden="true">Required</p>
         <div class="signup-fields">
           <?php
-            if(isset($_SESSION['errors'])) {
-              foreach ($_SESSION['errors'] as $error)
-                echo '<div class="alert alert-danger text-danger text-center" role="alert">' . $error . '</div>'; 
+            if(isset($_SESSION['errors']['username'])) {
+                echo '<div
+                        id="username-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['username']
+                      .'</div>'
+                ;
             }
+
+            if(isset($_SESSION['errors']['email'])) {
+                echo '<div 
+                        id="email-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['email']
+                      .'</div>'
+                ;
+            }
+
+            if(isset($_SESSION['errors']['password'])) {
+              echo '<div
+                      id="password-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['password']
+                    .'</div>'
+              ;
+          }
+
+          if(isset($_SESSION['errors']['password_both'])) {
+              echo '<div
+                      id="password-both-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['password_both']
+                    .'</div>'
+              ;
+          }
+
+          if(isset($_SESSION['errors']['terms'])) {
+              echo '<div
+                      id="terms-error"
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['terms']
+                    .'</div>'
+              ;
+          }
           ?>
           <div class="form-floating">
               <input
@@ -55,6 +107,8 @@
                 value="<?= htmlspecialchars($_SESSION['old']['username'] ?? '') ?>"
                 autocomplete="username"
                 placeholder=" "
+                aria-describedby="<?= isset($_SESSION['errors']['username']) ? 'username-error' : '' ?>"
+                aria-invalid="<?= isset($_SESSION['errors']['username']) ? 'true' : 'false' ?>"
               >
               <label for="form-signup-name">Username</label>
             </div>
@@ -68,7 +122,9 @@
                 value="<?= htmlspecialchars($_SESSION['old']['email'] ?? '') ?>"
                 autocomplete="email"
                 placeholder=" "
-                required 
+                required
+                aria-describedby="<?= isset($_SESSION['errors']['email']) ? 'email-error' : '' ?>"
+                aria-invalid="<?= isset($_SESSION['errors']['email']) ? 'true' : 'false' ?>"
               >
               <label for="form-signup-email" class="required-sign">Email Address</label>
             </div>
@@ -77,11 +133,16 @@
               <input
                 type="password"
                 id="form-signup-password"
-                class="form-control <?= isset($_SESSION['errors']['password']) ? 'is-invalid' : '' ?>"
+                class="form-control <?= isset($_SESSION['errors']['password']) || isset($_SESSION['errors']['password_both']) ? 'is-invalid' : '' ?>"
                 name="password"
                 autocomplete="new-password"
                 placeholder="Password"
-                required 
+                required
+                aria-describedby="
+                                    <?= isset($_SESSION['errors']['password']) ? 'password-error' : '' ?>
+                                    <?= isset($_SESSION['errors']['password_both']) ? 'password-both-error' : '' ?>
+                                 "
+                aria-invalid="<?= isset($_SESSION['errors']['password']) || isset($_SESSION['errors']['password_both']) ? 'true' : 'false' ?>"                
               >
               <label for="form-signup-password" class="required-sign">Password</label>
             </div>
@@ -90,11 +151,13 @@
               <input
                 type="password"
                 id="form-signup-confirm-password"
-                class="form-control <?= isset($_SESSION['errors']['password']) ? 'is-invalid' : '' ?>"
+                class="form-control <?= isset($_SESSION['errors']['password_both']) ? 'is-invalid' : '' ?>"
                 name="confirm_password"
                 autocomplete="new-password"
                 placeholder="Confirm Password"
-                required 
+                required
+                aria-describedby="<?= isset($_SESSION['errors']['password_both']) ? 'password-both-error' : '' ?>"
+                aria-invalid="<?= isset($_SESSION['errors']['password_both']) ? 'true' : 'false' ?>"
               >
               <label for="form-signup-confirm-password" class="required-sign">Confirm Password</label>
             </div>
@@ -107,10 +170,14 @@
             class="form-check-input"
             name="terms"
             value="remember-me"
+            required
+            aria-describedby="<?= isset($_SESSION['errors']['terms']) ? 'terms-error' : '' ?>"
+            aria-invalid="<?= isset($_SESSION['errors']['terms']) ? 'true' : 'false' ?>"
           >
           <label class="form-check-label" for="signupTerms">
             I have read and agree
-            <a href="" class="text-nowrap terms-link">Terms & Conditions<span class="required-sign-nowrap ms-1">*</span></a>
+<!-- no link to terms -->
+            <a href="" class="text-nowrap terms-link">Terms & Conditions<span class="required-sign-nowrap ms-1" aria-hidden="true">*</span></a>
           </label>
         </div>
 
