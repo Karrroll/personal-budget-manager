@@ -208,6 +208,23 @@ body {
 }
 /* ------------------------ dashboard.html STYLES ------------------------------------------*/
 /* HEADER STYLES */
+#header-auth-content {
+display: flex;
+flex-direction: column;
+gap: 1rem;
+align-items: center;
+}
+
+#header-auth-logo {
+  /* height = item height - no padding bottom */
+  height: clamp(2.5rem, 1.75rem + 2.75vw, 3.5rem);
+}
+
+#header-auth-btn {
+  display: flex;
+  align-items: center;
+}
+
 #header-main {
   display: flex;
   flex-direction: row;
