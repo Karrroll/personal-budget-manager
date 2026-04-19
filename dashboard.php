@@ -23,17 +23,46 @@
 <body>
   <header id="header" class="d-flex flex-column">
     <div class="container">
-      <div id="header-homepage" class="d-flex flex-row align-items-center justify-content-between">
-        <a href="./dashboard.php" aria-label="Go to homepage">
-          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget app logo">
+
+      <div id="header-main">
+        <a href="./dashboard.php">
+          <img class="logo-size" src="./assets/images/LOGO.png" alt="Budget Manager homepage">
         </a>
 
-        <div>
-          <a href="./index.php" class="btn btn-dark button-content-center text-nowrap gap-1"
-             aria-label="Sign out of your account">
-            <img src="./assets/images/icons/box-arrow-right.svg" alt="" aria-hidden="true">
-            Sign out
+        <div class="dropdown">
+          <a
+            id="user-dropdown"
+            class="dropdown-a text-decoration-none"
+            href="#"
+            data-bs-toggle="dropdown"
+            aria-label="User menu"
+            aria-expanded="false"
+          >
+            <div id="user-avatar" class="d-flex flex-column">
+              <img class="avatar-logo" src="./assets/images/icons/person-circle.svg" alt="User profile">
+              <span class="avatar-name" ><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+            </div>
           </a>
+
+          <ul
+            class="dropdown-menu dropdown-menu-end text-small shadow"
+            aria-labelledby="user-dropdown"
+          >
+            <li>  <!-- My Profile item in progress -->
+              <a class="dropdown-item" href="#">
+                My Profile
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li>
+              <a class="dropdown-item text-nowrap gap-1" href="signout.php">
+                <img src="./assets/images/icons/box-arrow-right.svg" alt="" aria-hidden="true">
+                Sign out
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
 
@@ -157,6 +186,7 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="index.js" defer></script>
 </body>
 

@@ -158,11 +158,6 @@ body {
   font-weight: bolder;
 }
 
-.logo-size {
-  height: 3rem;
-  margin: 0.5rem 0;
-}
-
 .article-divider {
   width: 50%;
   height: 0.2rem;
@@ -213,8 +208,38 @@ body {
 }
 /* ------------------------ dashboard.html STYLES ------------------------------------------*/
 /* HEADER STYLES */
-#header-homepage {
+#header-main {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  /* height = item height + padding bottom */
+  height: clamp(3rem, 2.25rem + 2.75vw, 4rem);
+  padding-bottom: 0.5rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+/* header-main items height */
+#header-main a,
+#header-main div {
+  height: 100%;
+}
+
+#user-avatar .avatar-logo {
+  padding: clamp(0.1rem, 0.05rem + 0.2vw, 0.175rem);
+  min-height: 0;
+  width: auto;
+  object-fit: contain;
+}
+
+#user-avatar .avatar-name {
+  color: var(--menu-text-color);
+  font-size: clamp(0.85rem, 0.75rem + 0.375vw, 1rem);
+  line-height: 1.1;
+}
+
+.logo-size {
+  height: 100%;
 }
 
 /* MENU BASE STYLES */
