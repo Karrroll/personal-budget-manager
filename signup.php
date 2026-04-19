@@ -20,9 +20,9 @@
 </head>
 <body>
   <header id="header">
-    <div id="header-content" class="container d-flex justify-content-center">
+    <div id="header-auth-logo" class="container d-flex justify-content-center">
         <a href="./index.php">
-          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget Manager homepage">
+          <img class="logo-size" src="./assets/images/LOGO.png" alt="Budget Manager homepage">
         </a>
     </div>
   </header>

@@ -22,19 +22,24 @@
 
 <body>
   <header id="header">
-    <div id="header-content" class="container d-flex flex-column flex-sm-row gap-2 align-items-center justify-content-sm-between">
-      <div>
+    <div
+      id="header-auth-content"
+      class="container flex-sm-row justify-content-sm-between"
+    >
+     
+      <div id="header-auth-logo">
         <a href="./index.php">
-          <img src="./assets/images/LOGO.png" class="logo-size" alt="Budget Manager homepage">
+          <img class="logo-size" src="./assets/images/LOGO.png" alt="Budget Manager homepage">
         </a>
       </div>
 
-      <div>
+      <div id="header-auth-btn">
         <a href="./signup.php" class="btn btn-primary button-content-center text-nowrap gap-1">
           <img src="./assets/images/icons/person-plus-fill.svg" alt="" aria-hidden="true">
           Sign up
         </a>
       </div>
+
     </div>
   </header>
 
