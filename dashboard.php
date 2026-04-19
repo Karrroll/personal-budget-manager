@@ -57,7 +57,7 @@
               <hr class="dropdown-divider">
             </li>
             <li>
-              <a class="dropdown-item text-nowrap gap-1" href="signout.php">
+              <a class="dropdown-item text-nowrap gap-1" href="signout_process.php">
                 <img src="./assets/images/icons/box-arrow-right.svg" alt="" aria-hidden="true">
                 Sign out
               </a>

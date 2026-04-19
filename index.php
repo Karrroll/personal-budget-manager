@@ -63,6 +63,16 @@
           </p>
         </div>
         <?php
+          if (isset($_GET['logout']) && $_GET['logout'] === 'success') {
+            echo '<div
+                    class="alert alert-success text-success text-center"
+                    aria-live="polite"
+                  >'
+                    ."You have been successfully logged out"
+                  .'</div>'
+            ;
+          }
+
           if(isset($_SESSION['success'])) {
             echo '<div
                     class="alert alert-success text-success text-center"
