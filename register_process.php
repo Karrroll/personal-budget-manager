@@ -108,6 +108,8 @@
   
   //add user to database
   try {
+    $connection->beginTransaction();
+
     $stmt = $connection->prepare('INSERT INTO users(`username`, `password`, `email`) VALUES(:username, :password_hash, :email)');
     
     $stmt->bindValue(':username', $username, PDO::PARAM_STR);
@@ -115,10 +117,42 @@
     $stmt->bindValue(':email', $email, PDO::PARAM_STR);
     
     $stmt->execute();
+
+    //add initial payment methods
+    $new_user_id = $connection->lastInsertId();
+
+    $stmt = $connection->prepare('INSERT INTO payment_methods_assigned_to_users(`user_id`, `name`)
+                                  SELECT :user_id, name
+                                  FROM payment_methods_default'
+                                );
+    
+    $stmt->bindValue(':user_id', $new_user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    //add initial income category
+    $stmt = $connection->prepare('INSERT INTO incomes_category_assigned_to_users(`user_id`, `name`)
+                                  SELECT :user_id, name
+                                  FROM incomes_category_default'
+                                );
+    
+    $stmt->bindValue(':user_id', $new_user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    //add initial expense category
+    $stmt = $connection->prepare('INSERT INTO expenses_category_assigned_to_users(`user_id`, `name`)
+                                  SELECT :user_id, name
+                                  FROM expenses_category_default'
+                                );
+    
+    $stmt->bindValue(':user_id', $new_user_id, PDO::PARAM_INT);
+    $stmt->execute();
+
+    $connection->commit();
   } catch(PDOException $e) {
-    error_log($e->getMessage());
+    exit();
     $errors['general'] = "Cannot create account right now. Please try again later.";
     $_SESSION['errors'] = $errors;
+    $connection->rollBack();
     header('Location: index.php');
     exit();
   }
