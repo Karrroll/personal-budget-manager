@@ -138,53 +138,89 @@
       </section>
       <section class="transaction-form p-5">
 
-        <form id="transaction-form">
+        <form 
+          id="transaction-form"
+          action="transaction.php"
+          method="POST"
+        >
           <h2 class="visually-hidden">Transaction Form</h2>
-            <div class="input-group mb-3">
-              <div class="form-floating">
-                <input
-                  id="amount"
-                  class="form-control"
-                  type="number"
-                  placeholder=" "
-                  value="0.00"
-                  min="0.01"
-                  max="999999.99"
-                  step="0.01"
-                  required
-                  aria-describedby="amount-help"
-                >
-                <label for="amount">Amount</label>
-              </div>
-              <span class="input-group-text">PLN</span>
-              <small id="amount-help" class="form-text text-muted w-100">
-                Enter amount between 0.01 and 999 999.99 PLN
-              </small>
+          <input type="hidden" name="transaction-type" value="INCOME">
+
+          <div class="input-group mb-3">
+            <div class="form-floating">
+              <input
+                type="number"
+                id="amount"
+                class="form-control"
+                name="amount"
+                value="0.01"
+                placeholder=" "
+                min="0.01"
+                max="999999.99"
+                step="0.01"
+                required
+                aria-describedby="amount-help"
+              >
+              <label for="amount">Amount</label>
             </div>
+            <span class="input-group-text">PLN</span>
+            <small id="amount-help" class="form-text text-muted w-100 ms-2">
+              Enter amount between 0.01 and 999 999.99 PLN
+            </small>
+          </div>
 
           <div class="form-floating mb-3">
             <input
               type="date"
-              class="form-control"
               id="date"
+              class="form-control"
+              name="transaction-date"
+              value="<?= date('Y-m-d') ?>"
+              min="1970-01-01"
+              max="<?= date('Y-m-d') ?>"
               required
             >
             <label for="date">Date</label>
           </div>
 
           <div class="form-floating mb-3">
-            <select id="transaction-category" class="form-select" required>
+            <select
+              id="transaction-category"
+              class="form-select" 
+              name="category"
+              required
+            >
               <option value="" disabled selected>Choose category...</option>
-              <option value="1">Salary</option>
-              <option value="2">Bank Interest</option>
-              <option value="3">Allegro Sales</option>
-              <option value="4">Other</option>
+              <?php
+                require_once "connect.php";
+                $stmt = $connection->prepare('
+                  SELECT id, name
+                  FROM incomes_category_assigned_to_users
+                  WHERE user_id = :user_id
+                  ORDER BY (name = "Other") ASC, name ASC
+                ');
+                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $income_cat = $stmt->fetchAll();
+              ?>
+                
+              <?php foreach($income_cat as $category): ?>
+                  <option value="<?= $category['id'] ?>">
+                    <?= htmlspecialchars($category['name']) ?>
+                  </option>
+              <?php endforeach; ?>
+        
             </select>
             <label for="transaction-category">Transaction Category</label>
           </div>
 
           <div class="form-floating mb-3">
-            <textarea id="comment-field" class="form-control" placeholder="Leave a comment here"></textarea>
+            <textarea
+              id="comment-field"
+              class="form-control"
+              name="comment"
+              placeholder="Leave a comment here"></textarea>
             <label for="comment-field">Comments (optional)</label>
           </div>
 
