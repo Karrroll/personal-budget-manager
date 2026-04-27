@@ -132,6 +132,34 @@
   </header>
 
   <main id="main" class="py-5 px-2 px-sm-5">
+
+<?php if (isset($_GET['error']) && $_GET['error'] === 'general'): ?>
+  <div id="error-modal" class="modal fade" data-bs-backdrop="static" tabindex="-1" aria-labelledby="errorModalTitle">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+
+      <div class="modal-header">
+          <h1 class="modal-title fs-5" id="errorModalTitle">
+            Error
+          </h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <div class="modal-body text-center">
+          An unexpected error occurred. Please try again later.
+        </div>
+
+        <div class="modal-footer justify-content-center">
+          <a href="dashboard.php" class="btn btn-primary">
+            OK
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<?php endif; ?>
+
     <div class="dashboard-section d-flex flex-column flex-md-row m-auto">
       <h1 class="visually-hidden">Financial Dashboard</h1>
       <section class="d-flex flex-column">

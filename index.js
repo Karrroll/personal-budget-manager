@@ -1,3 +1,13 @@
+// ----------- modal alert -----------
+document.addEventListener("DOMContentLoaded", function () {
+    const modalEl = document.getElementById('error-modal');
+
+    if (modalEl) {
+        const modal = new bootstrap.Modal(modalEl);
+        modal.show();
+    }
+});
+
 // ----------- sidebar menu action -----------
 const sidebarMenu = document.querySelector(".sidebar-nav-menu");
 

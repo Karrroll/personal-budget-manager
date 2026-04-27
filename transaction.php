@@ -12,14 +12,14 @@
 
   $old['amount'] = $amount;
   $old['date'] = $given_date;
+  $old['comment'] = $comment;
 
   if($type === "INCOME") {
     $redirect = 'income.php';
   } else if ($type === "EXPENSE") {
     $redirect = 'expense.php';
   } else {
-    $errors['general'] = "Sorry, something went wrong try again later";
-    header('Location: dashboard.php');
+    header('Location: dashboard.php?error=general');
     exit();
   }
 
@@ -48,7 +48,7 @@
     $min_date = new DateTime('1970-01-01');
 
     if (!$date || $date->format('Y-m-d') !== $given_date) {
-      $errors['date'] = "Invalid date";
+      $errors['date'] = "Invalid date format";
     } else if ($date->setTime(0, 0, 0) > $today->setTime(0, 0, 0) || $date < $min_date) {
       $errors['date'] = "Date out of range";
     }
@@ -84,9 +84,7 @@
       }
     } catch(PDOException $e) {
       error_log($e->getMessage());
-      $errors['general'] = "An unexpected error occurred. Please try again later.";
-      $_SESSION['errors'] = $errors; 
-      header("Location: $redirect");
+      header('Location: dashboard.php?error=general');
       exit();
     }
   } else {
@@ -98,4 +96,7 @@
   }
 
   //SUCCESS
+  $_SESSION['success'] = "Transaction added successfully";
+  header("Location: $redirect");
+  exit();
 ?>
