@@ -144,22 +144,78 @@
           method="POST"
         >
           <h2 class="visually-hidden">Transaction Form</h2>
-          <input type="hidden" name="transaction-type" value="INCOME">
 
+          //hidden input to recognize transaction type
+          <input type="hidden" name="transaction-type" value="INCOME">
+          <?php
+            if(isset($_SESSION['success'])) {
+              echo '<div
+                      class="alert alert-success text-success text-center"
+                      aria-live="polite"
+                    >'
+                      .$_SESSION['success']
+                    .'</div>'
+              ;
+            }
+
+            if(isset($_SESSION['errors']['general'])) {
+              echo '<div
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['general']
+                    .'</div>'
+              ;
+            }
+
+            if(isset($_SESSION['errors']['amount'])) {
+                echo '<div
+                        id="amount-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['amount']
+                      .'</div>'
+                ;
+            }
+
+            if(isset($_SESSION['errors']['date'])) {
+                echo '<div
+                        id="date-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['date']
+                      .'</div>'
+                ;
+            }
+
+            if(isset($_SESSION['errors']['category'])) {
+                echo '<div
+                        id="category-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['category']
+                      .'</div>'
+                ;
+            }
+          ?>
           <div class="input-group mb-3">
             <div class="form-floating">
               <input
                 type="number"
                 id="amount"
-                class="form-control"
+                class="form-control <?= isset($_SESSION['errors']['amount']) ? 'is-invalid' : '' ?>"
                 name="amount"
-                value="0.01"
+                value="<?= htmlspecialchars($_SESSION['old']['amount'] ?? '0.01') ?>"
                 placeholder=" "
                 min="0.01"
                 max="999999.99"
                 step="0.01"
                 required
-                aria-describedby="amount-help"
+                aria-describedby="amount-help <?= isset($_SESSION['errors']['amount']) ? 'amount-error' : '' ?>"
+                aria-invalid="<?= isset($_SESSION['errors']['amount']) ? 'true' : 'false' ?>"
               >
               <label for="amount">Amount</label>
             </div>
@@ -173,12 +229,14 @@
             <input
               type="date"
               id="date"
-              class="form-control"
+              class="form-control <?= isset($_SESSION['errors']['date']) ? 'is-invalid' : '' ?>"
               name="transaction-date"
-              value="<?= date('Y-m-d') ?>"
+              value="<?= htmlspecialchars($_SESSION['old']['date'] ?? date('Y-m-d')) ?>"
               min="1970-01-01"
               max="<?= date('Y-m-d') ?>"
               required
+              aria-describedby="<?= isset($_SESSION['errors']['date']) ? 'date-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['date']) ? 'true' : 'false' ?>"
             >
             <label for="date">Date</label>
           </div>
@@ -186,9 +244,11 @@
           <div class="form-floating mb-3">
             <select
               id="transaction-category"
-              class="form-select" 
+              class="form-select <?= isset($_SESSION['errors']['category']) ? 'is-invalid' : '' ?>" 
               name="category"
               required
+              aria-describedby="<?= isset($_SESSION['errors']['category']) ? 'category-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['category']) ? 'true' : 'false' ?>"
             >
               <option value="" disabled selected>Choose category...</option>
               <?php
@@ -205,9 +265,9 @@
                 $income_cat = $stmt->fetchAll();
               ?>
                 
-              <?php foreach($income_cat as $category): ?>
-                  <option value="<?= $category['id'] ?>">
-                    <?= htmlspecialchars($category['name']) ?>
+              <?php foreach($income_cat as $cat): ?>
+                  <option value="<?= $cat['id'] ?>">
+                    <?= htmlspecialchars($cat['name']) ?>
                   </option>
               <?php endforeach; ?>
         
@@ -220,7 +280,9 @@
               id="comment-field"
               class="form-control"
               name="comment"
-              placeholder="Leave a comment here"></textarea>
+              placeholder="Leave a comment here">
+              <?= htmlspecialchars($_SESSION['old']['comment'] ?? '', ENT_QUOTES) ?>
+            </textarea>
             <label for="comment-field">Comments (optional)</label>
           </div>
 
@@ -228,7 +290,9 @@
             <a href="./dashboard.php" class="btn btn-outline-secondary fw-semibold">Back Home</a>
             <button type="submit" class="btn btn-primary fw-semibold">Add</button>
           </div>
-
+          <?php
+            unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
+          ?>
         </form>
       </section>
     </div>
