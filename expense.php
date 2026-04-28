@@ -138,26 +138,36 @@
       </section>
       <section class="transaction-form p-5">
 
-        <form id="transaction-form">
+        <form
+          id="transaction-form"
+          action="transaction.php"
+          method="POST"
+        >
           <h2 class="visually-hidden">Transaction Form</h2>
+
+          <!-- hidden input to recognize transaction type -->
+          <input type="hidden" name="transaction-type" value="EXPENSE">
+
           <div class="input-group mb-3">
             <div class="form-floating">
               <input
-                id="amount"
-                class="form-control"
                 type="number"
+                id="amount"
+                class="form-control <?= isset($_SESSION['errors']['amount']) ? 'is-invalid' : '' ?>"
+                name="amount"
+                value="<?= htmlspecialchars($_SESSION['old']['amount'] ?? '0.01') ?>"
                 placeholder=" "
-                value="0.00"
                 min="0.01"
                 max="999999.99"
                 step="0.01"
                 required
-                aria-describedby="amount-help"
+                aria-describedby="amount-help <?= isset($_SESSION['errors']['amount']) ? 'amount-error' : '' ?>"
+                aria-invalid="<?= isset($_SESSION['errors']['amount']) ? 'true' : 'false' ?>"
               >
               <label for="amount">Amount</label>
             </div>
             <span class="input-group-text">PLN</span>
-            <small id="amount-help" class="form-text text-muted w-100">
+            <small id="amount-help" class="form-text text-muted w-100 ms-2">
               Enter amount between 0.01 and 999999.99 PLN
             </small>
           </div>
@@ -165,49 +175,93 @@
           <div class="form-floating mb-3">
             <input
               type="date"
-              class="form-control"
               id="date"
+              class="form-control <?= isset($_SESSION['errors']['date']) ? 'is-invalid' : '' ?>"
+              name="transaction-date"
+              value="<?= htmlspecialchars($_SESSION['old']['date'] ?? date('Y-m-d')) ?>"
+              min="1970-01-01"
+              max="<?= date('Y-m-d') ?>"
               required
+              aria-describedby="<?= isset($_SESSION['errors']['date']) ? 'date-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['date']) ? 'true' : 'false' ?>"
             >
             <label for="date">Date</label>
           </div>
 
           <div class="form-floating mb-3">
-            <select id="payment-methods" class="form-select" required>
+            <select
+              id="payment-type"
+              class="form-select <?= isset($_SESSION['errors']['payment-type']) ? 'is-invalid' : '' ?>"
+              name="payment-type"
+              required
+              aria-describedby="<?= isset($_SESSION['errors']['payment-type']) ? 'payment-type-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['payment-type']) ? 'true' : 'false' ?>"
+            >
               <option value="" disabled selected>Choose payment method...</option>
-              <option value="1">Cash</option>
-              <option value="2">Credit Card</option>
-              <option value="3">Debit Card</option>
+              <?php
+                require_once "connect.php";
+                $stmt = $connection->prepare('
+                  SELECT id, name
+                  FROM payment_methods_assigned_to_users
+                  WHERE user_id = :user_id
+                  ORDER BY name ASC
+                ');
+                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $payment_type = $stmt->fetchAll();
+              ?>
+
+              <?php foreach($payment_type as $type): ?>
+                  <option value="<?= $type['id'] ?>">
+                    <?= htmlspecialchars($type['name']) ?>
+                  </option>
+              <?php endforeach; ?>
             </select>
-            <label for="payment-methods">Payment Method</label>
+            <label for="payment-type">Payment Method</label>
           </div>
 
           <div class="form-floating mb-3">
-            <select id="transaction-category" class="form-select" required>
+            <select
+              id="transaction-category"
+              class="form-select <?= isset($_SESSION['errors']['category']) ? 'is-invalid' : '' ?>"
+              name="category"
+              required
+              aria-describedby="<?= isset($_SESSION['errors']['category']) ? 'category-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['category']) ? 'true' : 'false' ?>"
+            >
               <option value="" disabled selected>Choose category...</option>
-              <option value="1">Food</option>
-              <option value="2">Housing</option>
-              <option value="3">Transportation</option>
-              <option value="4">Telecommunications</option>
-              <option value="5">Medical/Healthcare</option>
-              <option value="6">Personal Care</option>
-              <option value="7">Clothing</option>
-              <option value="8">Childcare</option>
-              <option value="9">Travel</option>
-              <option value="10">Education</option>
-              <option value="11">Entertainment</option>
-              <option value="12">Books</option>
-              <option value="13">Savings</option>
-              <option value="14">Retirement</option>
-              <option value="15">Debt Repayment</option>
-              <option value="16">Donations</option>
-              <option value="17">Other</option>
+              <?php
+                require_once "connect.php";
+                $stmt = $connection->prepare('
+                  SELECT id, name
+                  FROM expenses_category_assigned_to_users
+                  WHERE user_id = :user_id
+                  ORDER BY (name = "Other") ASC, name ASC
+                ');
+                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->execute();
+
+                $expense_cat = $stmt->fetchAll();
+              ?>
+
+              <?php foreach($expense_cat as $cat): ?>
+                  <option value="<?= $cat['id'] ?>">
+                    <?= htmlspecialchars($cat['name']) ?>
+                  </option>
+              <?php endforeach; ?>
             </select>
             <label for="transaction-category">Transaction Category</label>
           </div>
 
           <div class="form-floating mb-3">
-            <textarea id="comment-field" class="form-control" placeholder="Leave a comment here"></textarea>
+            <textarea
+              id="comment-field"
+              class="form-control"
+              name="comment"
+              placeholder="Leave a comment here">
+              <?= htmlspecialchars($_SESSION['old']['comment'] ?? '', ENT_QUOTES) ?>
+            </textarea>
             <label for="comment-field">Comments (optional)</label>
           </div>
 
@@ -215,7 +269,9 @@
             <a href="./dashboard.php" class="btn btn-outline-secondary fw-semibold">Back Home</a>
             <button type="submit" class="btn btn-primary fw-semibold">Add</button>
           </div>
-
+          <?php
+            unset($_SESSION['errors'], $_SESSION['success'], $_SESSION['old']);
+          ?>
         </form>
       </section>
     </div>
