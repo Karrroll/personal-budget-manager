@@ -149,7 +149,7 @@
 
     $connection->commit();
   } catch(PDOException $e) {
-    exit();
+    error_log($e->getMessage());
     $errors['general'] = "Cannot create account right now. Please try again later.";
     $_SESSION['errors'] = $errors;
     $connection->rollBack();
