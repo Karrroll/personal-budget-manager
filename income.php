@@ -145,7 +145,7 @@
         >
           <h2 class="visually-hidden">Transaction Form</h2>
 
-          //hidden input to recognize transaction type
+          <!-- hidden input to recognize transaction type -->
           <input type="hidden" name="transaction-type" value="INCOME">
           <?php
             if(isset($_SESSION['success'])) {
