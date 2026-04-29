@@ -7,6 +7,7 @@
   $type = $_POST['transaction-type'] ?? '';
   $amount = trim($_POST['amount'] ?? '');
   $given_date = trim($_POST['transaction-date'] ?? '');
+  $payment_method = $_POST['payment-type'] ?? ''; // ONLY FOR EXPENSE TRANSACTION
   $category = $_POST['category'] ?? '';
   $comment = trim($_POST['comment'] ?? '');
 
@@ -55,42 +56,78 @@
   } 
 
   //validate category
-  if($category === '') {
+  if($category === '')
     $errors['category'] = "Category field is required";
-  } else if (!ctype_digit($category)) {
+  else if (!ctype_digit($category))
     $errors['category'] = "Invalid category format";
-  }
-
-  if(empty($errors)) {
+  else {
     try {
       require_once "connect.php";
       $category_id = (int) $category;
 
-      $stmt = $connection->prepare('
-        SELECT 1
-        FROM incomes_category_assigned_to_users
-        WHERE user_id = :logged_user AND id = :category_id
-      ');
+      if($type === "INCOME") {
+        $stmt = $connection->prepare('
+          SELECT 1
+          FROM incomes_category_assigned_to_users
+          WHERE user_id = :logged_user AND id = :category_id
+        ');
+      } else if($type === "EXPENSE") {
+        $stmt = $connection->prepare('
+          SELECT 1
+          FROM expenses_category_assigned_to_users
+          WHERE user_id = :logged_user AND id = :category_id
+        ');
+      }
+
       $stmt->bindValue(':logged_user', $_SESSION['user_id'], PDO::PARAM_INT);
       $stmt->bindValue(':category_id', $category_id, PDO::PARAM_INT);
       $stmt->execute();
 
-      if(!$stmt->fetchColumn()) {
+      if(!$stmt->fetchColumn())
         $errors['category'] = "Selected category not found";
-        $_SESSION['errors'] = $errors;
-        $_SESSION['old'] = $old;
-        header("Location: $redirect");
-        exit();
-      }
+    
     } catch(PDOException $e) {
       error_log($e->getMessage());
       header('Location: dashboard.php?error=general');
       exit();
     }
-  } else {
+  }
+
+  //validate payment method - ONLY FOR EXPENSE TRANSACTION
+  if($type === "EXPENSE") {
+    if($payment_method === '')
+      $errors['payment-type'] = "Payment method field is required";
+    else if (!ctype_digit($payment_method))
+      $errors['payment-type'] = "Invalid payment method format";
+    else {
+      try {
+        require_once "connect.php";
+        $payment_method_id = (int) $payment_method;
+
+        $stmt = $connection->prepare('
+          SELECT 1
+          FROM payment_methods_assigned_to_users
+          WHERE user_id = :logged_user AND id = :payment_method_id
+        ');
+        $stmt->bindValue(':logged_user', $_SESSION['user_id'], PDO::PARAM_INT);
+        $stmt->bindValue(':payment_method_id', $payment_method_id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        if(!$stmt->fetchColumn())
+          $errors['payment-type'] = "Selected payment method not found";
+      
+      } catch(PDOException $e) {
+        error_log($e->getMessage());
+        header('Location: dashboard.php?error=general');
+        exit();
+      }
+    }
+  }
+
+  //check validation result
+  if(!empty($errors)) {
     $_SESSION['errors'] = $errors;
     $_SESSION['old'] = $old;
-  
     header("Location: $redirect");
     exit();  
   }
@@ -104,8 +141,14 @@
         INSERT INTO incomes(`user_id`, `income_category_assigned_to_user_id`, `amount`, `date_of_income`, `income_comment`)
         VALUES(:logged_user, :category_id, :amount, :date, :comment)
       ');
+    } else if ($type === "EXPENSE") {
+      $stmt = $connection->prepare('
+        INSERT INTO expenses(`user_id`, `expense_category_assigned_to_user_id`, `payment_method_assigned_to_user_id`, `amount`, `date_of_expense`, `expense_comment`)
+        VALUES(:logged_user, :category_id, :payment_method, :amount, :date, :comment)
+      ');
     }
 
+    if($type === "EXPENSE") $stmt->bindValue(':payment_method', $payment_method_id, PDO::PARAM_INT);  // ONLY FOR EXPENSE TRANSACTION
     $stmt->bindValue(':logged_user', $_SESSION['user_id'], PDO::PARAM_INT);
     $stmt->bindValue(':category_id', $category_id, PDO::PARAM_INT);
     $stmt->bindValue(':amount', $amount_float, PDO::PARAM_STR);
@@ -124,7 +167,7 @@
     exit();
   }
 
-    $_SESSION['success'] = "Transaction added successfully";
-    header("Location: $redirect");
-    exit();
+  $_SESSION['success'] = "Transaction added successfully";
+  header("Location: $redirect");
+  exit();
 ?>
