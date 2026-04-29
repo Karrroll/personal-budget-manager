@@ -147,7 +147,71 @@
 
           <!-- hidden input to recognize transaction type -->
           <input type="hidden" name="transaction-type" value="EXPENSE">
+          <?php
+            if(isset($_SESSION['success'])) {
+              echo '<div
+                      class="alert alert-success text-success text-center"
+                      aria-live="polite"
+                    >'
+                      .$_SESSION['success']
+                    .'</div>'
+              ;
+            }
 
+            if(isset($_SESSION['errors']['general'])) {
+              echo '<div
+                      class="alert alert-danger text-danger text-center"
+                      role="alert"
+                    >'
+                      .$_SESSION['errors']['general']
+                    .'</div>'
+              ;
+            }
+
+            if(isset($_SESSION['errors']['amount'])) {
+                echo '<div
+                        id="amount-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['amount']
+                      .'</div>'
+                ;
+            }
+
+            if(isset($_SESSION['errors']['date'])) {
+                echo '<div
+                        id="date-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['date']
+                      .'</div>'
+                ;
+            }
+            
+            if(isset($_SESSION['errors']['payment-type'])) {
+                echo '<div
+                        id="payment-type"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['payment-type']
+                      .'</div>'
+                ;
+            }
+            
+            if(isset($_SESSION['errors']['category'])) {
+                echo '<div
+                        id="category-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['category']
+                      .'</div>'
+                ;
+            }
+          ?>
           <div class="input-group mb-3">
             <div class="form-floating">
               <input
