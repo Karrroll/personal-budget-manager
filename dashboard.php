@@ -5,7 +5,12 @@
     $_SESSION['errors']['general'] = "Please sign in to access this page!";
     header('Location: index.php');
     exit();
+  } else {
+    $user_id = $_SESSION['user_id'];
   }
+
+  require_once "connect.php";
+  include_once "finance_utilities.php";
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -167,12 +172,16 @@
 
         <div class="monthly-summary-items">
           <div class="item-label income-item">
-            <span>###</span>
+            <span>
+              <?= htmlspecialchars(getMonthlyTransactions($connection, $user_id, new DateTime(), "INCOME") ?? "###") ?>
+            </span>
             <span>Income</span>
           </div>
 
           <div class="item-label expense-item">
-            <span>###</span>
+            <span>
+              <?= htmlspecialchars(getMonthlyTransactions($connection, $user_id, new DateTime(), "EXPENSE") ?? "###") ?>
+            </span>
             <span>Expense</span>
           </div>
 
