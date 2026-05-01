@@ -169,12 +169,18 @@
       <h1 class="visually-hidden">Financial Dashboard</h1>
       <section class="d-flex flex-column">
         <h2 id="monthly-overview-title">Your Monthly Overview</h2>
-
+        
         <?php //GET MONTHLY OVERVIEW NUMBERS
-          $income = getMonthlyTransactions($connection, $user_id, new DateTime(), "INCOME") ?? "###";
-          $expense = getMonthlyTransactions($connection, $user_id, new DateTime(), "EXPENSE") ?? "###";
+          //Date range for current month incomes
+          $today = new DateTime();
+          $start_date = $today->format('Y-m-01'); // First day current month
+          $end_date = $today->format('Y-m-d');    // Today
+          
+          $income = getIncome($connection, $user_id, $start_date, $end_date) ?? "###";
+          $expense = getExpense($connection, $user_id, $start_date, $end_date) ?? "###";
           is_numeric($income) && is_numeric($expense) ? $balance = calculateBalance($income, $expense) : $balance = "###";
         ?>
+
         <div class="monthly-summary-items">
           <div class="item-label income-item">
             <span>

@@ -1,25 +1,31 @@
 <?php
-  //calculate total monthly transaction for user
-  function getMonthlyTransactions(PDO $connection, int $user_id, DateTime $date, string $type) {
+  //calculate income for user
+  function getIncome(PDO $connection, int $user_id, string $start, string $end) {
     try {
-      $current_month = $date->format('Y-m');
-
-      if($type === "INCOME") {
-        $stmt = $connection->prepare('
-          SELECT SUM(amount) FROM incomes WHERE user_id = :user_id AND date_of_income LIKE :current_month
-        ');
-      } else if($type === "EXPENSE") {
-        $stmt = $connection->prepare('
-          SELECT SUM(amount) FROM expenses WHERE user_id = :user_id AND date_of_expense LIKE :current_month
-        ');
-      } else {
-        error_log($e->getMessage());
-        header('Location: dashboard.php?error=general');
-        exit();
-      }
-
+      $stmt = $connection->prepare('
+        SELECT SUM(amount) FROM incomes WHERE user_id = :user_id AND date_of_income BETWEEN :start_date AND :end_date
+      ');
       $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-      $stmt->bindValue(':current_month', $current_month .'%', PDO::PARAM_STR);
+      $stmt->bindValue(':start_date', $start, PDO::PARAM_STR);
+      $stmt->bindValue(':end_date', $end, PDO::PARAM_STR);
+      $stmt->execute();
+ 
+      return (float) $stmt->fetchColumn();
+    } catch(PDOException $e) {
+      error_log($e->getMessage());
+      return NULL;
+    }
+  }
+
+  //calculate expense for user
+  function getExpense(PDO $connection, int $user_id, string $start, string $end) {
+    try {
+      $stmt = $connection->prepare('
+        SELECT SUM(amount) FROM expenses WHERE user_id = :user_id AND date_of_expense BETWEEN :start_date AND :end_date
+      ');
+      $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+      $stmt->bindValue(':start_date', $start, PDO::PARAM_STR);
+      $stmt->bindValue(':end_date', $end, PDO::PARAM_STR);
       $stmt->execute();
  
       return (float) $stmt->fetchColumn();
