@@ -438,6 +438,14 @@ nav a:hover:not(.sidebar-menu-icon) {
   font-weight: bolder;
 }
 
+.item-label span:first-child {
+  color: rgb(var(--item-color));
+  max-width: 90%;
+  font-size: 1.25em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .income-item {
   --item-color: var(--income-primary-color);
 }
