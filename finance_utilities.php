@@ -29,4 +29,7 @@
     }
   }
 
+  function calculateBalance(float $inc, float $exp) {
+    return $inc - $exp;
+  }
 ?>

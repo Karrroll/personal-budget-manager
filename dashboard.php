@@ -170,23 +170,30 @@
       <section class="d-flex flex-column">
         <h2 id="monthly-overview-title">Your Monthly Overview</h2>
 
+        <?php //GET MONTHLY OVERVIEW NUMBERS
+          $income = getMonthlyTransactions($connection, $user_id, new DateTime(), "INCOME") ?? "###";
+          $expense = getMonthlyTransactions($connection, $user_id, new DateTime(), "EXPENSE") ?? "###";
+          is_numeric($income) && is_numeric($expense) ? $balance = calculateBalance($income, $expense) : $balance = "###";
+        ?>
         <div class="monthly-summary-items">
           <div class="item-label income-item">
             <span>
-              <?= htmlspecialchars(getMonthlyTransactions($connection, $user_id, new DateTime(), "INCOME") ?? "###") ?>
+              <?= htmlspecialchars($income) ?>
             </span>
             <span>Income</span>
           </div>
 
           <div class="item-label expense-item">
             <span>
-              <?= htmlspecialchars(getMonthlyTransactions($connection, $user_id, new DateTime(), "EXPENSE") ?? "###") ?>
+              <?= htmlspecialchars($expense) ?>
             </span>
             <span>Expense</span>
           </div>
 
           <div class="item-label balance-item">
-            <span>###</span>
+            <span>
+              <?= htmlspecialchars($balance) ?>
+            </span>
             <span>Balance</span>
           </div>
         </div>
