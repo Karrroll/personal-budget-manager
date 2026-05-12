@@ -24,12 +24,13 @@ const selectPeriod = document.querySelector("#select-period");
 const customDatesPicker = document.querySelector("#select-custom-dates");
 
 selectPeriod.addEventListener("change", () => {
-  if(selectPeriod.value === "4") {
+  if(selectPeriod.value === "CUSTOM") {
     customDatesPicker.hidden = false;
     selectPeriod.setAttribute("aria-expanded", "true");
   } else {
     customDatesPicker.hidden = true;
     selectPeriod.setAttribute("aria-expanded", "false");
+    selectPeriod.form.submit();
   }
 });
 
@@ -53,7 +54,6 @@ const expensePercentScore = totalBalance ? 100 - incomePercentScore : 0;
 // Convert percentages to semi-ring values (half ring) => Ring Value range: 0-50 
 const greenRingValue = Math.max(0, Math.min(50, 0.5 * incomePercentScore));
 const redRingValue = Math.max(0, Math.min(50, 0.5 * expensePercentScore));
-
 
 // SET PROGRESS RING VALUE
 /**
@@ -91,7 +91,6 @@ function updateRingVariables(selector, value) {
   }
 }
 
-
 // DISPLAY PROGRESS RING SCORE [%]
 function displayScore(income, expense) {
   //  set income/expense percent score
@@ -112,7 +111,6 @@ function displayScore(income, expense) {
     `Income ${income}%, Expense ${expense}%`
   );
 }
-  
 
 // UPDATE FINANCIAL FEEDBACK
 const positiveFeedback = document.querySelector('.financial-feedback .positive');
@@ -140,29 +138,6 @@ else if ((incomePercentScore > 45 && incomePercentScore < 55) &&
 else
   console.error(`Invalid data. Check income[%]: ${incomePercentScore} and expense[%]: ${expensePercentScore} values.`);
 
-
-// SHOW INCOME AND EXPENSE TOTAL AMOUNT TRANSACTIONS
-function totalTransactionsAmount(income, expense) {
-  // income table
-  const incomeTotalAmountElement = document.querySelector('#income-summary .total-amount');
-
-  incomeTotalAmountElement.textContent = income;
-  incomeTotalAmountElement.parentElement.setAttribute(
-    'aria-label',
-    `Total income: ${income} PLN`
-  );
-
-  // expense table
-  const expenseTotalAmountElement = document.querySelector('#expense-summary .total-amount');
-
-  expenseTotalAmountElement.textContent = expense;
-  expenseTotalAmountElement.parentElement.setAttribute(
-    'aria-label',
-    `Total expense: ${expense} PLN`
-  );
-}
-
 updateRingVariables('.ring.green', greenRingValue);
 updateRingVariables('.ring.red', redRingValue);
 displayScore(incomePercentScore, expensePercentScore);  // display progress ring financial score
-totalTransactionsAmount(totalIncome, totalExpense); // display total balance in tables

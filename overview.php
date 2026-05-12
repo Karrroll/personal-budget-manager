@@ -1,11 +1,16 @@
 <?php
-  session_start();
+session_start();
 
-  if(!isset($_SESSION['user_id'])) {
+if(!isset($_SESSION['user_id'])) {
     $_SESSION['errors']['general'] = "Please sign in to access this page!";
     header('Location: index.php');
     exit();
-  }
+}
+
+// initialize with default period value
+$selected_period = $_SESSION['selected-period'] ?? 'CURRENT';
+$start_date = $_SESSION['start-date'] ?? date('Y-m-01');
+$end_date = $_SESSION['end-date'] ?? date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,7 +24,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
   
-    <link rel="stylesheet" href="style.css"> <!-- link with .css -->
+  <link rel="stylesheet" href="style.css"> <!-- link with .css -->
 </head>
 <body>
   <header id="header" class="d-flex flex-column">
@@ -41,7 +46,7 @@
           >
             <div id="user-avatar" class="d-flex flex-column">
               <img class="avatar-logo" src="./assets/images/icons/person-circle.svg" alt="User profile">
-              <span class="avatar-name" ><?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+              <span class="avatar-name" ><?= htmlspecialchars($_SESSION['user_name']); ?></span>
             </div>
           </a>
 
@@ -140,40 +145,91 @@
         class="align-self-center align-self-md-end d-flex flex-column gap-2"
         aria-labelledby="select-period-heading"
       >
+      <form
+        id="data-picker-form"
+        method="POST"
+        action="date_picker_utilities.php"
+      >
         <h2 id="select-period-heading" class="visually-hidden">Select financial period</h2>
         <div class="d-flex flex-column">
           <label id="select-period-label" for="select-period" class="fw-bold">Select period:</label>
           <select
             id="select-period"
             class="form-select"
+            name="selected-period"
             aria-controls="select-custom-dates"
             aria-expanded="false"
             aria-label="Select financial period"
+            aria-invalid=""
           >
-            <option value="1" selected>This Month</option>
-            <option value="2">Previous Month</option>
-            <option value="3">This Year</option>
-            <option value="4">Custom Date</option>
+            <option value="CURRENT_MONTH" <?= $selected_period === 'CURRENT_MONTH' ? 'selected' : '' ?> >This Month</option>
+            <option value="LAST_MONTH" <?= $selected_period === 'LAST_MONTH' ? 'selected' : '' ?> >Previous Month</option>
+            <option value="CURRENT_YEAR" <?= $selected_period === 'CURRENT_YEAR' ? 'selected' : '' ?> >This Year</option>
+            <option value="CUSTOM" <?= $selected_period === 'CUSTOM' ? 'selected' : '' ?> >Custom Date</option>
           </select>
         </div>
 
-        <div id="select-custom-dates" hidden>
-          <label for="start-date" id="select-start-date-label" class="fw-bold d-flex flex-column">
-            From:
-            <input type="date" id="start-date" name="start-date" required>
-          </label>
-          <label for="end-date" id="select-end-date-label" class="fw-bold d-flex flex-column">
-            To:
-            <input type="date" id="end-date" name="end-date" required>
-          </label>
-          <input
-            id="select-date-button"
-            class="align-self-end btn btn-primary mt-2 fw-bold"
-            type="submit"
-            value="APPLY"
-            aria-label="Apply custom date range"
-          >
+        <div id="select-custom-dates" <?= $selected_period === 'CUSTOM' ? '' : 'hidden' ?> >
+          <?php
+            if(isset($_SESSION['errors']['start-date'])) {
+                echo '<div
+                        id="start-date-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['start-date']
+                      .'</div>'
+                ;
+            }
+
+            if(isset($_SESSION['errors']['end-date'])) {
+                echo '<div
+                        id="end-date-error"
+                        class="alert alert-danger text-danger text-center"
+                        role="alert"
+                      >'
+                        .$_SESSION['errors']['end-date']
+                      .'</div>'
+                ;
+            }
+          ?>
+          <div class="form-floating">
+            <input
+              type="date"
+              id="start-date"
+              class="form-control <?= isset($_SESSION['errors']['start-date']) ? 'is-invalid' : '' ?>"
+              name="start-date"
+              value="<?= htmlspecialchars($_SESSION['old']['start-date'] ?? date('Y-m-d')) ?>"
+              min="1970-01-01"
+              max="<?= date('Y-m-d') ?>"
+              required
+              aria-describedby="<?= isset($_SESSION['errors']['start-date']) ? 'start-date-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['start-date']) ? 'true' : 'false' ?>"
+            >
+            <label for="start-date">From</label>
+          </div>
+
+          <div class="form-floating">
+            <input
+              type="date"
+              id="end-date"
+              class="form-control <?= isset($_SESSION['errors']['end-date']) ? 'is-invalid' : '' ?>"
+              name="end-date"
+              value="<?= htmlspecialchars($_SESSION['old']['end-date'] ?? date('Y-m-d')) ?>"
+              min="1970-01-01"
+              max="<?= date('Y-m-d') ?>"
+              required
+              aria-describedby="<?= isset($_SESSION['errors']['end-date']) ? 'end-date-error' : '' ?>"
+              aria-invalid="<?= isset($_SESSION['errors']['end-date']) ? 'true' : 'false' ?>"
+            >
+            <label for="end-date">To</label>
+          </div>
+
+          <input type="submit" id="select-date-button" class="align-self-end btn btn-primary mt-2 fw-bold" value="APPLY" aria-label="Apply custom date range">
+        
         </div>
+        <?php  unset($_SESSION['errors'], $_SESSION['old']); ?>
+      </form>
       </section>
 
       <section id="financial-summary"
@@ -234,77 +290,73 @@
                   <th scope="col" class="text-center">Share [%]</th>
                 </tr>
               </thead>
-              <tbody class="table-group-divider">
+              <tbody class="table-group-divider">            
+              <?php
+                require_once "connect.php";
+
+                $stmt = $connection->prepare('
+                  SELECT
+                    assigned_cat.id AS `id`,
+                    assigned_cat.name AS `name`,
+                    SUM(incomes.amount) AS `category_amount`
+                  FROM incomes_category_assigned_to_users AS `assigned_cat`
+                    INNER JOIN incomes
+                      ON assigned_cat.user_id = incomes.user_id
+                      AND assigned_cat.id = incomes.income_category_assigned_to_user_id
+                      AND date_of_income BETWEEN :start_date AND :end_date
+                  WHERE assigned_cat.user_id = :user_id
+                  GROUP BY `name`
+                  ORDER BY `category_amount` DESC
+                ');
+                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
+                $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
+                $stmt->execute();
+
+                $income_cat = $stmt->fetchAll();
+
+                $total_amount = array_sum(array_column($income_cat, 'category_amount'));
+              ?>
+
+              <?php if (!empty($income_cat)): ?>
+              <?php
+                include_once "finance_utilities.php";
+
+                $row_counter = 1;
+                foreach($income_cat as $cat):
+                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2); 
+              ?>
                 <tr>
-                  <th scope="row" class="text-center">1</th>
+                  <th scope="row" class="text-center"><?= $row_counter++ ?></th>
                   <td>
                     <button
                       type="button"
                       class="btn-link-table"
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category1 transactions">
-                      Category1 <!-- Category name will be loaded automatically Update aria-label category names!! -->
-                  </button>  <!-- data-category to identify selected category -->
-                  </td>
-                  <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
-                  <td class="text-center">#</td>  <!-- Value will be calculated automatically-->
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">2</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category2 transactions">
-                      Category2
+                      data-category="<?= htmlspecialchars($cat['id']) ?>"
+                      aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                      <?= htmlspecialchars($cat['name']) ?>
                   </button>
                   </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
+                  <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
+                  <td class="text-center"> <?= $category_share ?> </td>
                 </tr>
+              <?php endforeach; ?>
+              <?php else: ?>
                 <tr>
-                  <th scope="row" class="text-center">3</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category3 transactions">
-                      Category3
-                  </button>
+                  <td class="text-center" colspan="4">
+                    <div class="fw-bold my-2">No incomes for selected period</div>
                   </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
                 </tr>
-                <tr>
-                  <th scope="row" class="text-center">4</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category4 transactions">
-                      Category4
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
+              <?php endif; ?>
+
               </tbody>
               <tfoot class="table-group-divider">
                 <tr>
-                  <th scope="row" colspan="4" class="text-end" aria-label="Total income: PLN">  <!-- aria-label will be updated automatically -->
+                  <th scope="row" colspan="4" class="text-end" aria-label="Total income: <?= number_format((float)$total_amount, 2, '.', ',') ?> PLN">
                     <span>Total income:</span>
-                    <span class="total-amount"></span>  <!-- Value will be calculated automatically -->
+                    <span class="total-amount"> <?= number_format((float)$total_amount, 2, '.', ',') ?> </span>
                     <span>PLN</span>
                   </th>
                 </tr>
@@ -330,284 +382,67 @@
                 </tr>
               </thead>
               <tbody class="table-group-divider">
+              <?php
+                $stmt = $connection->prepare('
+                  SELECT
+                    assigned_cat.id AS `id`,
+                    assigned_cat.name AS `name`,
+                    SUM(expenses.amount) AS `category_amount`
+                  FROM expenses_category_assigned_to_users AS `assigned_cat`
+                    INNER JOIN expenses
+                      ON assigned_cat.user_id = expenses.user_id
+                      AND assigned_cat.id = expenses.expense_category_assigned_to_user_id
+                      AND date_of_expense BETWEEN :start_date AND :end_date
+                  WHERE assigned_cat.user_id = :user_id
+                  GROUP BY `name`
+                  ORDER BY `category_amount` DESC
+                ');
+                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
+                $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
+                $stmt->execute();
+
+                $expense_cat = $stmt->fetchAll();
+
+                $total_amount = array_sum(array_column($expense_cat, 'category_amount'));
+              ?>
+
+              <?php if (!empty($expense_cat)): ?>
+              <?php
+                $row_counter = 1;
+                foreach($expense_cat as $cat):
+                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2); 
+              ?>
                 <tr>
-                  <th scope="row" class="text-center">1</th>
+                  <th scope="row" class="text-center"><?= $row_counter++ ?></th>
                   <td>
                     <button
                       type="button"
                       class="btn-link-table"
                       data-bs-toggle="modal"
                       data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category1 transactions">
-                      Category1 <!-- Category name will be loaded automatically Update aria-label category names!! -->
-                  </button>  <!-- data-category to identify selected category -->
-                  </td>
-                  <td class="text-center">#</td>  <!-- Amount will be loaded automatically-->
-                  <td class="text-center">#</td>  <!-- Value will be calculated automatically-->
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">2</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category2 transactions">
-                      Category2
+                      data-category="<?= htmlspecialchars($cat['id']) ?>"
+                      aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                      <?= htmlspecialchars($cat['name']) ?>
                   </button>
                   </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
+                  <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
+                  <td class="text-center"> <?= $category_share ?> </td>
                 </tr>
+              <?php endforeach; ?>
+              <?php else: ?>
                 <tr>
-                  <th scope="row" class="text-center">3</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category3 transactions">
-                      Category3
-                  </button>
+                  <td class="text-center" colspan="4">
+                    <div class="fw-bold my-2">No expenses for selected period</div>
                   </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
                 </tr>
-                <tr>
-                  <th scope="row" class="text-center">4</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category4 transactions">
-                      Category4
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">5</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category5 transactions">
-                      Category5
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">6</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category6 transactions">
-                      Category6
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">7</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category7 transactions">
-                      Category7
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">8</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category8 transactions">
-                      Category8
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">9</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category9 transactions">
-                      Category9
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">10</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category10 transactions">
-                      Category10
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">11</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category11 transactions">
-                      Category11
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">12</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category12 transactions">
-                      Category12
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">13</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category13 transactions">
-                      Category13
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">14</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category14 transactions">
-                      Category14
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">15</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category15 transactions">
-                      Category15
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">16</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category16 transactions">
-                      Category16
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
-                <tr>
-                  <th scope="row" class="text-center">17</th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="categoryId"
-                      aria-label="View details for Category17 transactions">
-                      Category17
-                  </button>
-                  </td>
-                  <td class="text-center">#</td>
-                  <td class="text-center">#</td>
-                </tr>
+              <?php endif; ?>        
               </tbody>
               <tfoot class="table-group-divider">
                 <tr>
-                  <th scope="row" colspan="4" class="text-end" aria-label="Total expense: PLN"> <!-- aria-label will be calculated automatically -->
+                  <th scope="row" colspan="4" class="text-end" aria-label="Total expense: <?= number_format((float)$total_amount, 2, '.', ',') ?> PLN">
                     <span>Total expense:</span>
-                    <span class="total-amount"></span> <!-- Value will be calculated automatically -->
+                    <span class="total-amount"> <?= number_format((float)$total_amount, 2, '.', ',') ?> </span>
                     <span>PLN</span>
                   </th>
                 </tr>
@@ -616,7 +451,7 @@
           </div>
         </div>
       </section>
-    
+                 
 <!-- Category details modal -->
       <section class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true"> <!-- aria-hidden JS !! -->
         <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
@@ -637,6 +472,7 @@
       </section>
 
     </div>
+    <?php  unset($_SESSION['selected-period'], $_SESSION['start-date'], $_SESSION['end-date']); ?>
   </main>
 
   <footer id="footer">
