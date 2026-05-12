@@ -38,4 +38,11 @@
   function calculateBalance(float $inc, float $exp) {
     return $inc - $exp;
   }
+
+  function shareOfTotal(float $total, float $amount, int $precision) {
+    if($total != 0)
+      return ($amount != 0) ? round(($amount / $total) * 100, $precision) : 0;
+    else
+      return "#";
+  }
 ?>
