@@ -45,4 +45,19 @@
     else
       return NULL;
   }
+
+  function calculateSemiRingProgress(int $inc_percent, int $exp_percent) {
+    //no data
+    if($inc_percent === 0 && $exp_percent === 0)
+      return [0, 0];
+    //invalid range
+    if(($inc_percent < 0 || $inc_percent > 100) || ($exp_percent < 0 || $exp_percent > 100))
+      return [0, 0];
+
+    //convert to progress ring range
+    $income_progress = 0.5 * $inc_percent;
+    $expense_progress = 0.5 * $exp_percent;
+
+    return [$income_progress, $expense_progress];
+  }
 ?>

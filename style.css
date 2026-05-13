@@ -704,7 +704,7 @@ hr.summary-divider {
 
 @keyframes fillAnimation {
   to {
-    stroke-dasharray: var(--progress-value) var(--gap-value); /* values are calculated in JS */
+    stroke-dasharray: var(--progress-value) var(--gap-value);
     filter: drop-shadow(0 0 7.5px rgb(var(--glow-color)));
   }
 }
@@ -742,10 +742,6 @@ hr.summary-divider {
   text-align: center;
   font-weight: bolder;
   padding: 0.5rem max(7.5vw, 1.5rem)
-}
-
-.financial-feedback p {
-  display: none;
 }
 
 .positive span {

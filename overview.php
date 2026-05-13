@@ -197,6 +197,8 @@
                       .'</div>'
                 ;
             }
+            // Control flag. Do not show dynamic data when true
+            $data_invalid = isset($_SESSION['errors']);
           ?>
           <div class="form-floating">
             <input
@@ -245,26 +247,26 @@
 <!-- Progress ring balance -->
 
         <?php
-        //zmienne do obliczeń dynamicznych
-        $selected_period_income = getIncome($connection, $user_id, $start_date, $end_date);
-        $selected_period_expense = getExpense($connection, $user_id, $start_date, $end_date);
-        
-        if($selected_period_income === NULL || $selected_period_expense === NULL) {
-          header('Location: dashboard.php?error=general');
-          exit();
-        }
-        
-        $selected_period_total = $selected_period_income + $selected_period_expense;
-        
-        $income_share = shareOfTotal($selected_period_total, $selected_period_income, 0); 
-        $expense_share = shareOfTotal($selected_period_total, $selected_period_expense, 0);
+        //                ----------VERIABLES TO CALCULATE DYNAMIC DATA---------------
+        if($data_invalid) {
+          $income_share = 0;  // Assigned 0 to prevent progress ring from filling if smth wrong
+          $expense_share = 0;
+        } else {
+          $selected_period_income = getIncome($connection, $user_id, $start_date, $end_date) ?? 0;
+          $selected_period_expense = getExpense($connection, $user_id, $start_date, $end_date) ?? 0;
 
-        if($income_share === NULL || $expense_share === NULL) {
-          header('Location: dashboard.php?error=general');
-          exit();
+          $selected_period_total = $selected_period_income + $selected_period_expense;
+
+          $income_share = shareOfTotal($selected_period_total, $selected_period_income, 0) ?? 0; 
+          $expense_share = shareOfTotal($selected_period_total, $selected_period_expense, 0) ?? 0;
         }
 
+        // values[%] for progress ring
+        [$income_progress, $expense_progress] = calculateSemiRingProgress($income_share, $expense_share);
+        // Set $PATH_LENGTH=100 on all SVG rings - allows calculate stroke-dasharray as percentages (0-100).
+        $PATH_LENGTH = 100;
         ?>
+
         <div class="d-flex flex-column align-items-center">
           <div class="semi-ring-wrapper"
             aria-label="Income vs expense balance"
@@ -273,33 +275,73 @@
             role="progressbar"
           >
             <svg viewBox="0 0 300 300">
-              <circle class="ring bg" cx="150" cy="150" r="125"></circle> <!-- bg ring -->
-              <circle class="ring green" cx="150" cy="150" r="125"></circle> <!-- green ring -->
-              <circle class="ring red" cx="150" cy="150" r="125"></circle> <!-- red ring -->
+              <!-- bg ring -->
+              <circle
+                class="ring bg"
+                style="--total-path-length: <?= $PATH_LENGTH ?>;"
+                cx="150" cy="150" r="125"
+                pathLength="<?= $PATH_LENGTH ?>"
+              ></circle>
+              <!-- green ring -->
+              <circle                                       
+                class="ring green"
+                style="
+                        --total-path-length: <?= $PATH_LENGTH ?>;
+                        --progress-value: <?= $income_progress ?? '0' ?>;
+                        --gap-value: <?= (int) ($PATH_LENGTH - $income_progress) ?>;
+                      "
+                cx="150" cy="150" r="125"
+                pathLength="<?= $PATH_LENGTH ?>"
+              ></circle>
+              <!-- red ring -->
+              <circle
+                class="ring red"
+                style="
+                        --total-path-length: <?= $PATH_LENGTH ?>;
+                        --progress-value: <?= $expense_progress ?? '0' ?>;
+                        --gap-value: <?= (int) ($PATH_LENGTH - $expense_progress) ?>;
+                      "
+                cx="150" cy="150" r="125"
+                pathLength="<?= $PATH_LENGTH ?>"
+              ></circle>
             </svg>
-            <div class="ring-score" aria-label="Income <?= (int) $income_share ?>%, Expense <?= (int) $expense_share ?>%" role="status">  
-              <span class="expense" aria-hidden="true"><?= (int) $expense_share ?></span>
+
+            <div class="ring-score" aria-label="Income <?= $income_share ?>%, Expense <?= $expense_share ?>%" role="status">
+              <span class="expense" aria-hidden="true"><?= $expense_share ?></span>
               <span class="divider" aria-hidden="true">/</span>
-              <span class="income" aria-hidden="true"><?= (int) $income_share ?></span>
+              <span class="income" aria-hidden="true"><?= $income_share ?></span>
             </div>
           </div>
+                                <!-- FINANCIAL FEEDBACK -->
+          <?php
+            $feedback_class = '';
+
+            if(($income_share === 0 && $expense_share === 0) && !$data_invalid) {
+                $feedback_class = 'no-transactions';
+            } elseif($income_share >= 55 && $expense_share <= 45) {
+                $feedback_class = 'positive';
+            } elseif($income_share <= 45 && $expense_share >= 55) {
+                $feedback_class = 'negative';
+            } elseif($income_share > 45 && $income_share < 55 && $expense_share > 45 && $expense_share < 55) {
+                $feedback_class = 'neutral';
+            }
+          ?>
           <div class="financial-feedback fs-5 mt-3" aria-live="polite" role="status">
-            <p class="positive">
-              <span>Great job!</span> Your finances are in good shape!
-            </p>
-            <p class="neutral">
-              Your finances are balanced - keep an eye on your spending!
-            </p>
-            <p class="negative">
-              <span>Warning!</span> You are spending more than you earn!
-            </p>
-            <p class="no-transactions">
-              No transactions for the selected period.
-            </p>
+            <?php if($feedback_class === 'positive'): ?>
+              <p class="positive"><span>Great job!</span> Your finances are in good shape!</p>
+            <?php elseif($feedback_class === 'neutral'): ?>
+              <p class="neutral">Your finances are balanced - keep an eye on your spending!</p>
+            <?php elseif($feedback_class === 'negative'): ?>
+              <p class="negative"><span>Warning!</span> You are spending more than you earn!</p>
+            <?php elseif($feedback_class === 'no-transactions'): ?>
+              <p class="no-transactions">No transactions for selected period.</p>
+            <?php else: ?>
+              <p>Invalid data. Check selected period dates</p>
+            <?php endif; ?>
           </div>
         </div>
 
-<!-- Income summary table -->
+                                  <!-- INCOME TABLE -->
         <div id="tables-wrapper">
           <div id="income-summary" class="d-flex flex-column">
             <div class="summary-title bg-dark text-center py-2">
@@ -318,62 +360,73 @@
                 </tr>
               </thead>
               <tbody class="table-group-divider">            
-              <?php
-                $stmt = $connection->prepare('
-                  SELECT
-                    assigned_cat.id AS `id`,
-                    assigned_cat.name AS `name`,
-                    SUM(incomes.amount) AS `category_amount`
-                  FROM incomes_category_assigned_to_users AS `assigned_cat`
-                    INNER JOIN incomes
-                      ON assigned_cat.user_id = incomes.user_id
-                      AND assigned_cat.id = incomes.income_category_assigned_to_user_id
-                      AND date_of_income BETWEEN :start_date AND :end_date
-                  WHERE assigned_cat.user_id = :user_id
-                  GROUP BY `name`
-                  ORDER BY `category_amount` DESC
-                ');
-                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-                $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
-                $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
-                $stmt->execute();
+              <?php if (!$data_invalid): ?>
+                <?php
+                  $stmt = $connection->prepare('
+                    SELECT
+                      assigned_cat.id AS `id`,
+                      assigned_cat.name AS `name`,
+                      SUM(incomes.amount) AS `category_amount`
+                    FROM incomes_category_assigned_to_users AS `assigned_cat`
+                      INNER JOIN incomes
+                        ON assigned_cat.user_id = incomes.user_id
+                        AND assigned_cat.id = incomes.income_category_assigned_to_user_id
+                        AND date_of_income BETWEEN :start_date AND :end_date
+                    WHERE assigned_cat.user_id = :user_id
+                    GROUP BY `name`
+                    ORDER BY `category_amount` DESC
+                  ');
+                  $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                  $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
+                  $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
+                  $stmt->execute();
 
-                $income_cat = $stmt->fetchAll();
+                  $income_cat = $stmt->fetchAll();
 
-                $total_amount = array_sum(array_column($income_cat, 'category_amount'));
-              ?>
+                  $total_amount = array_sum(array_column($income_cat, 'category_amount'));
+                ?>
 
-              <?php if (!empty($income_cat)): ?>
-              <?php
-                include_once "finance_utilities.php";
+                <?php if (!empty($income_cat)): ?>
+                <?php
+                  include_once "finance_utilities.php";
 
-                $row_counter = 1;
-                foreach($income_cat as $cat):
-                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0;
-              ?>
-                <tr>
-                  <th scope="row" class="text-center"><?= $row_counter++ ?></th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="<?= htmlspecialchars($cat['id']) ?>"
-                      aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
-                      <?= htmlspecialchars($cat['name']) ?>
-                  </button>
-                  </td>
-                  <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
-                  <td class="text-center"> <?= $category_share ?> </td>
-                </tr>
-              <?php endforeach; ?>
+                  $row_counter = 1;
+                  foreach($income_cat as $cat):
+                    $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0;
+                ?>
+                  <tr>
+                    <th scope="row" class="text-center"><?= $row_counter++ ?></th>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn-link-table"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"
+                        data-category="<?= htmlspecialchars($cat['id']) ?>"
+                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                        <?= htmlspecialchars($cat['name']) ?>
+                    </button>
+                    </td>
+                    <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
+                    <td class="text-center"> <?= $category_share ?> </td>
+                  </tr>
+                <?php endforeach; ?>
+                <?php else: ?>
+                  <tr>
+                    <td class="text-center" colspan="4">
+                      <div class="fw-bold my-2">No incomes for selected period</div>
+                    </td>
+                  </tr>
+                <?php endif; ?>
+
               <?php else: ?>
+                <!-- Data invalid: show empty table with message -->
                 <tr>
-                  <td class="text-center" colspan="4">
-                    <div class="fw-bold my-2">No incomes for selected period</div>
-                  </td>
+                    <td class="text-center" colspan="4">
+                        <div class="fw-bold my-2">No available data</div>
+                    </td>
                 </tr>
+                <?php $total_amount = 0; ?>
               <?php endif; ?>
 
               </tbody>
@@ -389,7 +442,7 @@
             </table>
           </div>
 
-<!-- Expense summary table -->        
+                                                  <!-- EXPENSE TABLE -->
           <div id="expense-summary" class="d-flex flex-column">
             <div class="summary-title bg-dark text-center py-2">
               <h2>Expense</h2>
@@ -407,61 +460,73 @@
                 </tr>
               </thead>
               <tbody class="table-group-divider">
-              <?php
-                $stmt = $connection->prepare('
-                  SELECT
-                    assigned_cat.id AS `id`,
-                    assigned_cat.name AS `name`,
-                    SUM(expenses.amount) AS `category_amount`
-                  FROM expenses_category_assigned_to_users AS `assigned_cat`
-                    INNER JOIN expenses
-                      ON assigned_cat.user_id = expenses.user_id
-                      AND assigned_cat.id = expenses.expense_category_assigned_to_user_id
-                      AND date_of_expense BETWEEN :start_date AND :end_date
-                  WHERE assigned_cat.user_id = :user_id
-                  GROUP BY `name`
-                  ORDER BY `category_amount` DESC
-                ');
-                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
-                $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
-                $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
-                $stmt->execute();
+              <?php if (!$data_invalid): ?>
+                <?php
+                  $stmt = $connection->prepare('
+                    SELECT
+                      assigned_cat.id AS `id`,
+                      assigned_cat.name AS `name`,
+                      SUM(expenses.amount) AS `category_amount`
+                    FROM expenses_category_assigned_to_users AS `assigned_cat`
+                      INNER JOIN expenses
+                        ON assigned_cat.user_id = expenses.user_id
+                        AND assigned_cat.id = expenses.expense_category_assigned_to_user_id
+                        AND date_of_expense BETWEEN :start_date AND :end_date
+                    WHERE assigned_cat.user_id = :user_id
+                    GROUP BY `name`
+                    ORDER BY `category_amount` DESC
+                  ');
+                  $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                  $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
+                  $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
+                  $stmt->execute();
 
-                $expense_cat = $stmt->fetchAll();
+                  $expense_cat = $stmt->fetchAll();
 
-                $total_amount = array_sum(array_column($expense_cat, 'category_amount'));
-              ?>
+                  $total_amount = array_sum(array_column($expense_cat, 'category_amount'));
+                ?>
 
-              <?php if (!empty($expense_cat)): ?>
-              <?php
-                $row_counter = 1;
-                foreach($expense_cat as $cat):
-                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0; 
-              ?>
-                <tr>
-                  <th scope="row" class="text-center"><?= $row_counter++ ?></th>
-                  <td>
-                    <button
-                      type="button"
-                      class="btn-link-table"
-                      data-bs-toggle="modal"
-                      data-bs-target="#staticBackdrop"
-                      data-category="<?= htmlspecialchars($cat['id']) ?>"
-                      aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
-                      <?= htmlspecialchars($cat['name']) ?>
-                  </button>
-                  </td>
-                  <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
-                  <td class="text-center"> <?= $category_share ?> </td>
-                </tr>
-              <?php endforeach; ?>
+                <?php if(!empty($expense_cat) && !$data_invalid): ?>
+                <?php
+                  $row_counter = 1;
+                  foreach($expense_cat as $cat):
+                    $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0;
+                ?>
+                  <tr>
+                    <th scope="row" class="text-center"><?= $row_counter++ ?></th>
+                    <td>
+                      <button
+                        type="button"
+                        class="btn-link-table"
+                        data-bs-toggle="modal"
+                        data-bs-target="#staticBackdrop"
+                        data-category="<?= htmlspecialchars($cat['id']) ?>"
+                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                        <?= htmlspecialchars($cat['name']) ?>
+                    </button>
+                    </td>
+                    <td class="text-center"> <?= htmlspecialchars($cat['category_amount']) ?> </td>
+                    <td class="text-center"> <?= $category_share ?> </td>
+                  </tr>
+                <?php endforeach; ?>
+                <?php else: ?>
+                  <tr>
+                    <td class="text-center" colspan="4">
+                      <div class="fw-bold my-2">No expenses for selected period</div>
+                    </td>
+                  </tr>
+                <?php endif; ?>
+
               <?php else: ?>
+                <!-- Data invalid: show empty table with message -->
                 <tr>
-                  <td class="text-center" colspan="4">
-                    <div class="fw-bold my-2">No expenses for selected period</div>
-                  </td>
+                    <td class="text-center" colspan="4">
+                        <div class="fw-bold my-2">No available data</div>
+                    </td>
                 </tr>
-              <?php endif; ?>        
+                <?php $total_amount = 0; ?>
+              <?php endif; ?>
+
               </tbody>
               <tfoot class="table-group-divider">
                 <tr>
