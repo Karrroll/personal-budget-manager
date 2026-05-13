@@ -35,8 +35,8 @@ selectPeriod.addEventListener("change", () => {
 });
 
 // ----------- progress ring animation -----------
-const totalIncome = 1470;  // TEMPORARY VALUE! Value will be calculated 
-const totalExpense = 809; // TEMPORARY VALUE! Value will be calculated
+const totalIncome = 300.98;  // TEMPORARY VALUE! Value will be calculated 
+const totalExpense = 35.24; // TEMPORARY VALUE! Value will be calculated
 const totalBalance = totalIncome + totalExpense;
 
 // Set pathLength=100 on all SVG rings - allows calculate stroke-dasharray as percentages (0-100).
@@ -91,26 +91,7 @@ function updateRingVariables(selector, value) {
   }
 }
 
-// DISPLAY PROGRESS RING SCORE [%]
-function displayScore(income, expense) {
-  //  set income/expense percent score
-  const incomeScoreElement = document.querySelector('.ring-score .income');
-  const expenseScoreElement = document.querySelector('.ring-score .expense');
 
-  if (!incomeScoreElement || !expenseScoreElement) {
-    console.error('Cannot update ring score: .income or .expense element not found');
-    return;
-  }
-
-  incomeScoreElement.textContent = income;
-  expenseScoreElement.textContent = expense;
-
-  // update aria-label ring-score
-  document.querySelector('.ring-score').setAttribute(
-    'aria-label',
-    `Income ${income}%, Expense ${expense}%`
-  );
-}
 
 // UPDATE FINANCIAL FEEDBACK
 const positiveFeedback = document.querySelector('.financial-feedback .positive');

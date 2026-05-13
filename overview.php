@@ -1,16 +1,21 @@
 <?php
-session_start();
+  session_start();
 
-if(!isset($_SESSION['user_id'])) {
+  if(!isset($_SESSION['user_id'])) {
     $_SESSION['errors']['general'] = "Please sign in to access this page!";
     header('Location: index.php');
     exit();
-}
+  } else {
+    $user_id = $_SESSION['user_id'];
+  }
 
-// initialize with default period value
-$selected_period = $_SESSION['selected-period'] ?? 'CURRENT';
-$start_date = $_SESSION['start-date'] ?? date('Y-m-01');
-$end_date = $_SESSION['end-date'] ?? date('Y-m-d');
+  require_once "connect.php";
+  include_once "finance_utilities.php";
+
+  // initialize with default period values
+  $selected_period = $_SESSION['selected-period'] ?? 'CURRENT';
+  $start_date = $_SESSION['start-date'] ?? date('Y-m-01');
+  $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -238,6 +243,28 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
       >
         <h2 id="financial-summary-heading">Your Financial Summary</h2>
 <!-- Progress ring balance -->
+
+        <?php
+        //zmienne do obliczeń dynamicznych
+        $selected_period_income = getIncome($connection, $user_id, $start_date, $end_date);
+        $selected_period_expense = getExpense($connection, $user_id, $start_date, $end_date);
+        
+        if($selected_period_income === NULL || $selected_period_expense === NULL) {
+          header('Location: dashboard.php?error=general');
+          exit();
+        }
+        
+        $selected_period_total = $selected_period_income + $selected_period_expense;
+        
+        $income_share = shareOfTotal($selected_period_total, $selected_period_income, 0); 
+        $expense_share = shareOfTotal($selected_period_total, $selected_period_expense, 0);
+
+        if($income_share === NULL || $expense_share === NULL) {
+          header('Location: dashboard.php?error=general');
+          exit();
+        }
+
+        ?>
         <div class="d-flex flex-column align-items-center">
           <div class="semi-ring-wrapper"
             aria-label="Income vs expense balance"
@@ -250,10 +277,10 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
               <circle class="ring green" cx="150" cy="150" r="125"></circle> <!-- green ring -->
               <circle class="ring red" cx="150" cy="150" r="125"></circle> <!-- red ring -->
             </svg>
-            <div class="ring-score" aria-label="Income %, Expense %" role="status"> <!-- aria-label will be updated automatically -->   
-              <span class="expense" aria-hidden="true"></span> <!-- Value will be calculated automatically -->
+            <div class="ring-score" aria-label="Income <?= (int) $income_share ?>%, Expense <?= (int) $expense_share ?>%" role="status">  
+              <span class="expense" aria-hidden="true"><?= (int) $expense_share ?></span>
               <span class="divider" aria-hidden="true">/</span>
-              <span class="income" aria-hidden="true"></span>  <!-- Value will be calculated automatically -->
+              <span class="income" aria-hidden="true"><?= (int) $income_share ?></span>
             </div>
           </div>
           <div class="financial-feedback fs-5 mt-3" aria-live="polite" role="status">
@@ -292,8 +319,6 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
               </thead>
               <tbody class="table-group-divider">            
               <?php
-                require_once "connect.php";
-
                 $stmt = $connection->prepare('
                   SELECT
                     assigned_cat.id AS `id`,
@@ -308,7 +333,7 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
                   GROUP BY `name`
                   ORDER BY `category_amount` DESC
                 ');
-                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
                 $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
                 $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
                 $stmt->execute();
@@ -324,7 +349,7 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
 
                 $row_counter = 1;
                 foreach($income_cat as $cat):
-                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2); 
+                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0;
               ?>
                 <tr>
                   <th scope="row" class="text-center"><?= $row_counter++ ?></th>
@@ -397,7 +422,7 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
                   GROUP BY `name`
                   ORDER BY `category_amount` DESC
                 ');
-                $stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+                $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
                 $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
                 $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
                 $stmt->execute();
@@ -411,7 +436,7 @@ $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
               <?php
                 $row_counter = 1;
                 foreach($expense_cat as $cat):
-                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2); 
+                  $category_share = shareOfTotal($total_amount, $cat['category_amount'], 2) ?? 0; 
               ?>
                 <tr>
                   <th scope="row" class="text-center"><?= $row_counter++ ?></th>

@@ -43,6 +43,6 @@
     if($total != 0)
       return ($amount != 0) ? round(($amount / $total) * 100, $precision) : 0;
     else
-      return "#";
+      return NULL;
   }
 ?>
