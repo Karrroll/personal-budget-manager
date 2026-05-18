@@ -12,10 +12,94 @@
   require_once "connect.php";
   include_once "finance_utilities.php";
 
-  // initialize with default period values
-  $selected_period = $_SESSION['selected-period'] ?? 'CURRENT';
-  $start_date = $_SESSION['start-date'] ?? date('Y-m-01');
-  $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
+  //initialize with default period values - NOT FOR fetch POST modal transactions table
+  if(!isset($_POST['category-id'], $_POST['start-date-details'], $_POST['end-date-details'], $_POST['category-type'])) {
+    $selected_period = $_SESSION['selected-period'] ?? 'CURRENT';
+    $start_date = $_SESSION['start-date'] ?? date('Y-m-01');
+    $end_date = $_SESSION['end-date'] ?? date('Y-m-d');
+  }
+
+                                  //FETCH POST MODAL TRANSACTIONS TABLE ONLY
+  if(isset($_POST['category-id']) && isset($_POST['start-date-details']) && isset($_POST['end-date-details']) && isset($_POST['category-type'])) {
+    //validate data  
+    if(
+      !ctype_digit($_POST['category-id']) ||
+      ($_POST['start-date-details'] === '' || $_POST['end-date-details'] === '') ||
+      ($_POST['category-type'] !== "INCOME" && $_POST['category-type'] !== "EXPENSE")
+    ) {
+      echo "
+        <tr>
+          <td class='text-center text-danger' colspan='4'>
+              <div class='fw-bold my-2'>Something went wrong. Try again later</div>
+          </td>
+        </tr>
+      ";
+      error_log(
+        "[" .date('Y-m-d H:i:s') ."] File: " .__FILE__ ." Line: " .__LINE__ 
+        ." - Invalid data: ID='{$_POST['category-id']}', Start date='{$_POST['start-date-details']}', End date='{$_POST['end-date-details']}', Type='{$_POST['category-type']}'");
+      exit();
+    }
+    
+    $selected_category_id = $_POST['category-id'];
+    $category_type = $_POST['category-type'];
+    $start_date = $_POST['start-date-details'];
+    $end_date = $_POST['end-date-details'];
+
+    //determine table and columns based on selected category type
+    if($category_type === 'INCOME') {
+      $db_table_name = "incomes";
+      $selected_columns = "amount, date_of_income AS `date`, COALESCE(income_comment, '') AS `comment`";
+      $category_id_column = "income_category_assigned_to_user_id";
+      $date_column = "date_of_income";
+    } else {
+      $db_table_name = "expenses";
+      $selected_columns = "amount, date_of_expense AS `date`, COALESCE(expense_comment, '') AS `comment`";
+      $category_id_column = "expense_category_assigned_to_user_id";
+      $date_column = "date_of_expense";
+    }
+
+    //SQL query using selected table and columns for transactions table
+    $sql = "
+      SELECT $selected_columns
+      FROM $db_table_name
+      WHERE user_id = :user_id AND $category_id_column = :category_id AND $date_column BETWEEN :start_date AND :end_date
+      ORDER BY $date_column DESC
+    ";
+
+    $stmt = $connection->prepare($sql);
+    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->bindValue(':category_id', $selected_category_id, PDO::PARAM_INT);
+    $stmt->bindValue(':start_date', $start_date, PDO::PARAM_STR);
+    $stmt->bindValue(':end_date', $end_date, PDO::PARAM_STR);
+    $stmt->execute();
+
+    $transactions = $stmt->fetchAll();
+
+    //transactions table content
+    if(!empty($transactions)) {
+      $row_counter = 1;
+      foreach($transactions as $tran) {
+        echo "
+          <tr>
+            <th scope='row' class='text-center'>".$row_counter++."</th>
+            <td class='text-center'>".htmlspecialchars($tran['amount'])."</td>
+            <td class='text-center'>".htmlspecialchars($tran['date'])."</td>
+            <td class='text-center'>".(!empty($tran['comment']) ? htmlspecialchars($tran['comment']) : '-')."</td>
+          </tr>
+        ";
+      }
+    } else {
+      echo "
+        <tr>
+          <td class='text-center text-danger' colspan='4'>
+              <div class='fw-bold my-2'>No transactions for selected category</div>
+          </td>
+        </tr>
+      ";
+    }
+
+    exit(); //stop here for fetch modal transaction table
+  }
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -150,11 +234,7 @@
         class="align-self-center align-self-md-end d-flex flex-column gap-2"
         aria-labelledby="select-period-heading"
       >
-      <form
-        id="data-picker-form"
-        method="POST"
-        action="date_picker_utilities.php"
-      >
+      <form id="data-picker-form" method="POST" action="date_picker_utilities.php">
         <h2 id="select-period-heading" class="visually-hidden">Select financial period</h2>
         <div class="d-flex flex-column">
           <label id="select-period-label" for="select-period" class="fw-bold">Select period:</label>
@@ -244,10 +324,10 @@
         aria-labelledby="financial-summary-heading"
       >
         <h2 id="financial-summary-heading">Your Financial Summary</h2>
-<!-- Progress ring balance -->
 
+                                  <!-- PROGRESS RING BALANCE -->
         <?php
-        //                ----------VERIABLES TO CALCULATE DYNAMIC DATA---------------
+        //veriables to calculate dynamic data
         if($data_invalid) {
           $income_share = 0;  // Assigned 0 to prevent progress ring from filling if smth wrong
           $expense_share = 0;
@@ -276,14 +356,9 @@
           >
             <svg viewBox="0 0 300 300">
               <!-- bg ring -->
-              <circle
-                class="ring bg"
-                style="--total-path-length: <?= $PATH_LENGTH ?>;"
-                cx="150" cy="150" r="125"
-                pathLength="<?= $PATH_LENGTH ?>"
-              ></circle>
+              <circle class="ring bg" style="--total-path-length: <?= $PATH_LENGTH ?>;" cx="150" cy="150" r="125"  pathLength="<?= $PATH_LENGTH ?>"></circle>
               <!-- green ring -->
-              <circle                                       
+              <circle
                 class="ring green"
                 style="
                         --total-path-length: <?= $PATH_LENGTH ?>;
@@ -292,7 +367,8 @@
                       "
                 cx="150" cy="150" r="125"
                 pathLength="<?= $PATH_LENGTH ?>"
-              ></circle>
+              >
+              </circle>
               <!-- red ring -->
               <circle
                 class="ring red"
@@ -303,7 +379,8 @@
                       "
                 cx="150" cy="150" r="125"
                 pathLength="<?= $PATH_LENGTH ?>"
-              ></circle>
+              >
+              </circle>
             </svg>
 
             <div class="ring-score" aria-label="Income <?= $income_share ?>%, Expense <?= $expense_share ?>%" role="status">
@@ -312,7 +389,8 @@
               <span class="income" aria-hidden="true"><?= $income_share ?></span>
             </div>
           </div>
-                                <!-- FINANCIAL FEEDBACK -->
+
+                                  <!-- FINANCIAL FEEDBACK -->
           <?php
             $feedback_class = '';
 
@@ -348,9 +426,7 @@
               <h2>Income</h2>
             </div>
 
-            <table class="table table-bordered table-striped table-hover m-0"
-              aria-label="Summary of income by category for selected period"
-            >
+            <table class="table table-bordered table-striped table-hover m-0" aria-label="Summary of income by category for selected period">
               <thead >
                 <tr>
                   <th scope="col" class="text-center">#</th>
@@ -401,9 +477,13 @@
                         type="button"
                         class="btn-link-table"
                         data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
-                        data-category="<?= htmlspecialchars($cat['id']) ?>"
-                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                        data-bs-target="#categoryTransactions"
+                        data-category-id="<?= htmlspecialchars($cat['id']) ?>"
+                        data-category-start-date="<?= $start_date ?>"
+                        data-category-end-date="<?= $end_date ?>"
+                        data-category-type="INCOME"
+                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions"
+                      >
                         <?= htmlspecialchars($cat['name']) ?>
                     </button>
                     </td>
@@ -442,15 +522,13 @@
             </table>
           </div>
 
-                                                  <!-- EXPENSE TABLE -->
+                                  <!-- EXPENSE TABLE -->
           <div id="expense-summary" class="d-flex flex-column">
             <div class="summary-title bg-dark text-center py-2">
               <h2>Expense</h2>
             </div>
 
-            <table class="table table-bordered table-striped table-hover m-0"
-              aria-label="Summary of expense by category for selected period"
-            >
+            <table class="table table-bordered table-striped table-hover m-0" aria-label="Summary of expense by category for selected period">
               <thead >
                 <tr>
                   <th scope="col" class="text-center">#</th>
@@ -499,9 +577,13 @@
                         type="button"
                         class="btn-link-table"
                         data-bs-toggle="modal"
-                        data-bs-target="#staticBackdrop"
-                        data-category="<?= htmlspecialchars($cat['id']) ?>"
-                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions">
+                        data-bs-target="#categoryTransactions"
+                        data-category-id="<?= htmlspecialchars($cat['id']) ?>"
+                        data-category-start-date="<?= $start_date ?>"
+                        data-category-end-date="<?= $end_date ?>"
+                        data-category-type="EXPENSE"
+                        aria-label="View details for <?= htmlspecialchars($cat['name']) ?> transactions"
+                      >
                         <?= htmlspecialchars($cat['name']) ?>
                     </button>
                     </td>
@@ -541,28 +623,58 @@
           </div>
         </div>
       </section>
-                 
-<!-- Category details modal -->
-      <section class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="transactionModalLabel" aria-hidden="true"> <!-- aria-hidden JS !! -->
-        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
+
+                                  <!-- CATEGORY TRANSACTION DETAILS MODAL -->
+      <section
+        id="categoryTransactions"
+        class="modal fade"
+        data-bs-backdrop="static"
+        data-bs-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="transactionModalLabel"
+      >
+        <div class="modal-dialog modal-dialog-scrollable modal-lg modal-dialog-centered">
           <div class="modal-content">
             <div class="modal-header">
-              <h2 class="modal-title fs-5" id="transactionModalLabel">"category name" transactions</h2>
+              <h2 id="transactionModalLabel" class="modal-title fs-5 fw-bold">
+                <!-- Category name will be inserted here via JS -->
+              </h2>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              <p>List of category transactions (table with date, name, amount etc.)..... </p>
+              <form id="category-detaials-form" method="POST" action="">
+                <!-- hidden inputs storing the user's selected period transactions data -->
+                <input type="hidden" id="modal-category-id" name="category-id">
+                <input type="hidden" id="start-date-details" name="start-date-details">
+                <input type="hidden" id="end-date-details" name="end-date-details">
+                <input type="hidden" id="category-type" name="category-type">
+              </form>
+
+              <!-- Create transactions table -->
+              <table class="table table-bordered table-striped table-hover m-0" aria-label="Transactions list">
+                <thead >
+                  <tr>
+                    <th scope="col" class="text-center">#</th>
+                    <th scope="col" class="text-center">Amount [PLN]</th>
+                    <th scope="col" class="text-center">Date</th>
+                    <th scope="col" class="text-center">Comment</th>
+                  </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                  <!-- Table content inserted here via JS fetch() -->
+                </tbody>
+              </table>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" aria-label="Close">Close</button>
-              <!-- add print/export button -->
+              <!-- add print/export button here - WIP -->
             </div>
           </div>
         </div>
       </section>
 
     </div>
-    <?php  unset($_SESSION['selected-period'], $_SESSION['start-date'], $_SESSION['end-date']); ?>
+    <?php unset($_SESSION['selected-period'], $_SESSION['start-date'], $_SESSION['end-date']); ?>
   </main>
 
   <footer id="footer">
